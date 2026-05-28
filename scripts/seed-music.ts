@@ -250,17 +250,27 @@ async function uploadImageFromUrl(
 	url: string,
 	filename: string
 ): Promise<string> {
+	const buffer = await fetchImageBufferFromUrl(url);
+	return uploadImageBuffer(buffer, filename);
+}
+
+async function uploadImageBuffer(
+	buffer: Buffer,
+	filename: string
+): Promise<string> {
+	const asset = await sanity.assets.upload('image', buffer, {
+		filename
+	});
+	return asset._id;
+}
+
+async function fetchImageBufferFromUrl(url: string): Promise<Buffer> {
 	const res = await fetch(url);
 	if (!res.ok) {
 		throw new Error(`Image upload source request failed (${res.status})`);
 	}
 
-	const buffer = Buffer.from(await res.arrayBuffer());
-	const asset = await sanity.assets.upload('image', buffer, {
-		filename,
-		contentType: 'image/jpeg'
-	});
-	return asset._id;
+	return Buffer.from(await res.arrayBuffer());
 }
 
 async function deleteDraftIfExists(documentId: string) {
@@ -276,6 +286,141 @@ async function deleteDraftIfExists(documentId: string) {
 		}
 		throw error;
 	}
+}
+
+type LegacyCoverArtRelease = {
+	_id: string;
+	title?: string;
+	coverArt?: string;
+};
+
+type MissingTrackListRelease = {
+	_id: string;
+	title?: string;
+	artistName?: string;
+	trackCount?: number;
+};
+
+async function backfillLegacyReleaseCoverArtAssets() {
+	const releases = await sanity.fetch<LegacyCoverArtRelease[]>(
+		`*[_type == "musicRelease" && defined(coverArt) && !defined(coverArt.asset._ref)]{
+			_id,
+			title,
+			coverArt
+		}`
+	);
+
+	if (!releases.length) {
+		return;
+	}
+
+	console.log(
+		`\nBackfilling legacy release cover art assets (${releases.length} release${releases.length === 1 ? '' : 's'})...`
+	);
+
+	let patched = 0;
+	let skipped = 0;
+
+	for (const release of releases) {
+		const coverUrl = release.coverArt;
+		if (typeof coverUrl !== 'string' || !/^https?:\/\//i.test(coverUrl)) {
+			skipped += 1;
+			continue;
+		}
+
+		try {
+			const assetId = await uploadImageFromUrl(
+				coverUrl,
+				`${release._id}-cover.jpg`
+			);
+
+			await sanity
+				.patch(release._id)
+				.set({
+					coverArt: {
+						_type: 'image',
+						asset: { _type: 'reference', _ref: assetId }
+					}
+				})
+				.commit();
+
+			patched += 1;
+		} catch (error) {
+			skipped += 1;
+			const message =
+				error instanceof Error ? error.message : String(error);
+			console.warn(
+				`  Skipped cover art backfill for ${release._id}: ${message}`
+			);
+		}
+
+		await new Promise((resolve) => setTimeout(resolve, 150));
+	}
+
+	console.log(`  Backfill complete: ${patched} patched, ${skipped} skipped.`);
+}
+
+async function backfillMissingReleaseTrackLists() {
+	const releases = await sanity.fetch<MissingTrackListRelease[]>(
+		`*[_type == "musicRelease" && (!defined(trackList) || count(trackList) == 0)]{
+			_id,
+			title,
+			artistName,
+			trackCount
+		}`
+	);
+
+	if (!releases.length) {
+		return;
+	}
+
+	console.log(
+		`\nBackfilling missing release track lists (${releases.length} release${releases.length === 1 ? '' : 's'})...`
+	);
+
+	let patched = 0;
+	let skipped = 0;
+
+	for (const release of releases) {
+		const title = String(release.title ?? '').trim();
+		const artistName = String(release.artistName ?? '').trim();
+
+		if (!title || !artistName) {
+			skipped += 1;
+			continue;
+		}
+
+		try {
+			const itunes = await getItunesAlbumData(artistName, title);
+			if (!itunes || !itunes.trackList.length) {
+				skipped += 1;
+				continue;
+			}
+
+			await sanity
+				.patch(release._id)
+				.set({
+					trackCount: itunes.trackCount,
+					trackList: itunes.trackList
+				})
+				.commit();
+
+			patched += 1;
+		} catch (error) {
+			skipped += 1;
+			const message =
+				error instanceof Error ? error.message : String(error);
+			console.warn(
+				`  Skipped track list backfill for ${release._id}: ${message}`
+			);
+		}
+
+		await new Promise((resolve) => setTimeout(resolve, 150));
+	}
+
+	console.log(
+		`  Track list backfill complete: ${patched} patched, ${skipped} skipped.`
+	);
 }
 
 function buildEditorialThesisCandidates({
@@ -450,6 +595,7 @@ type ProcessedRelease = {
 	detail: WikidataAlbumDetail;
 	itunes: NonNullable<Awaited<ReturnType<typeof getItunesAlbumData>>>;
 	docId: string;
+	coverArtAssetId: string;
 };
 
 type CandidateRelease = {
@@ -459,6 +605,7 @@ type CandidateRelease = {
 	detail: WikidataAlbumDetail;
 	itunes: NonNullable<Awaited<ReturnType<typeof getItunesAlbumData>>>;
 	docId: string;
+	coverArtAssetId: string;
 };
 
 async function seedMusic() {
@@ -524,6 +671,10 @@ async function seedMusic() {
 		}
 
 		const resolvedTitle = resolveAlbumTitle(album.title, itunes.albumName);
+		const coverArtAssetId = await uploadImageFromUrl(
+			itunes.coverArt,
+			`nmt-${seedDateStr}-release-${album.entityId}.jpg`
+		);
 		const existingIndex = candidateReleases.findIndex(
 			(candidate) =>
 				(normalizeTitleForKey(candidate.resolvedTitle) ===
@@ -544,13 +695,18 @@ async function seedMusic() {
 				artistNames: mergedArtists,
 				detail,
 				itunes,
-				docId: existing.docId
+				docId: existing.docId,
+				coverArtAssetId
 			};
 
 			const best =
 				scoreCandidate(incomingCandidate) > scoreCandidate(existing)
 					? incomingCandidate
-					: { ...existing, artistNames: mergedArtists };
+					: {
+							...existing,
+							artistNames: mergedArtists,
+							coverArtAssetId: existing.coverArtAssetId
+						};
 
 			candidateReleases[existingIndex] = {
 				...best,
@@ -569,7 +725,8 @@ async function seedMusic() {
 			artistNames: [album.artistName],
 			detail,
 			itunes,
-			docId: existingDocId ?? `wikidata-album-${album.entityId}`
+			docId: existingDocId ?? `wikidata-album-${album.entityId}`,
+			coverArtAssetId
 		});
 		await new Promise((resolve) => setTimeout(resolve, 400));
 	}
@@ -594,6 +751,10 @@ async function seedMusic() {
 	for (const candidate of top4Candidates) {
 		const { album, resolvedTitle, artistNames, detail, itunes, docId } =
 			candidate;
+		const { coverArtAssetId } = candidate;
+		const existingRelease = await sanity.fetch<{
+			coverArt?: { asset?: { _ref?: string } };
+		} | null>(`*[_id == $id][0]{coverArt}`, { id: docId });
 		const displayArtistName = artistNames.join(', ');
 		const genres = detail.genres.length
 			? detail.genres
@@ -601,6 +762,21 @@ async function seedMusic() {
 				? [itunes.primaryGenre]
 				: [];
 		const label = detail.label || itunes.label || '';
+		const resolvedCoverArt = existingRelease?.coverArt?.asset?._ref
+			? {
+					_type: 'image' as const,
+					asset: {
+						_type: 'reference' as const,
+						_ref: existingRelease.coverArt.asset._ref
+					}
+				}
+			: {
+					_type: 'image' as const,
+					asset: {
+						_type: 'reference' as const,
+						_ref: coverArtAssetId
+					}
+				};
 
 		await deleteDraftIfExists(docId);
 
@@ -615,10 +791,11 @@ async function seedMusic() {
 			artistName: displayArtistName,
 			wikidataId: album.entityId,
 			releaseDate: album.releaseDate,
-			coverArt: itunes.coverArt,
+			coverArt: resolvedCoverArt,
 			genres,
 			label,
 			trackCount: itunes.trackCount,
+			trackList: itunes.trackList,
 			producers: detail.producers,
 			personnel: detail.personnel,
 			awards: detail.awards,
@@ -634,7 +811,8 @@ async function seedMusic() {
 			artistNames,
 			detail,
 			itunes,
-			docId
+			docId,
+			coverArtAssetId
 		});
 	}
 
@@ -647,20 +825,12 @@ async function seedMusic() {
 
 	console.log(`\nBuilding New Music Tuesday: ${nmtTitle}`);
 
-	console.log('  Uploading hero images...');
-	const heroImageAssets = await Promise.all(
-		top4.map(async ({ itunes }, i) => {
-			const assetId = await uploadImageFromUrl(
-				itunes.coverArt,
-				`nmt-${dateStr}-hero-${i + 1}.jpg`
-			);
-			return {
-				_type: 'image',
-				_key: `hero-${i}`,
-				asset: { _type: 'reference', _ref: assetId }
-			};
-		})
-	);
+	console.log('  Reusing cover art assets for hero images...');
+	const heroImageAssets = top4.map(({ coverArtAssetId }, i) => ({
+		_type: 'image',
+		_key: `hero-${i}`,
+		asset: { _type: 'reference', _ref: coverArtAssetId }
+	}));
 
 	console.log('  Building album review blocks...');
 	const albumReviews = top4.map(
@@ -1085,6 +1255,9 @@ Rules:
 
 		await new Promise((resolve) => setTimeout(resolve, 200));
 	}
+
+	await backfillLegacyReleaseCoverArtAssets();
+	await backfillMissingReleaseTrackLists();
 
 	console.log(
 		'\nDone. Check Studio in ~1 minute for generated content and images.'
