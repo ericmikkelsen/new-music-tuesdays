@@ -1,0 +1,11 @@
+---
+import { getBlogStaticPaths } from '../../lib/content/routeData';
+import BlogPost from '../../layouts/BlogPost.astro';
+
+export const prerender = true;
+export const getStaticPaths = getBlogStaticPaths;
+
+const { post, title = '', description = '' } = Astro.props;
+---
+
+<BlogPost title={title} description={description} post={post} />

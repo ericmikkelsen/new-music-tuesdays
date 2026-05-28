@@ -1,0 +1,35 @@
+---
+import type {
+	ArrayPageBuilderBlock,
+	BlockSettings
+} from '../../lib/content/pageBuilderTypes';
+import Billboard from './Billboard.astro';
+import ListScroller from './listScroller.astro';
+import PeopleRefs from './peopleRefs.astro';
+import RichText from './richText.astro';
+
+interface Props {
+	data: ArrayPageBuilderBlock;
+	index?: number;
+}
+
+const { data, index = 1 } = Astro.props as Props;
+const blockSettings: BlockSettings = {
+	as: index === 0 ? 'header' : 'section',
+	hLevel: index === 0 ? 1 : 2,
+	index: index,
+	priority: index === 0 ? true : false
+};
+---
+
+{
+	data._type === 'billboard' ? (
+		<Billboard {...data} {...blockSettings} />
+	) : data._type === 'listScroller' ? (
+		<ListScroller {...data} {...blockSettings} />
+	) : data._type === 'peopleRefs' ? (
+		<PeopleRefs {...data} {...blockSettings} />
+	) : data._type === 'richText' ? (
+		<RichText {...data} {...blockSettings} />
+	) : null
+}

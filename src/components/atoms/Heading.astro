@@ -1,0 +1,13 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'h1'> {
+	hLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+}
+const { hLevel = 2, ...attrs } = Astro.props as Props;
+const Wrapper = 'h' + hLevel;
+---
+
+<Wrapper {...attrs}>
+	<slot />
+</Wrapper>

@@ -1,0 +1,12 @@
+{
+	"reviewabilityBudget": {
+		"maxLinesPerChapter": 500,
+		"maxFilesPerChapter": 5,
+		"excludeGlobs": [
+			"package-lock.json",
+			"src/sanity/extract.json",
+			"src/sanity/types.ts"
+		],
+		"notes": "Adjust these values to match your team's review capacity. Lower values (e.g. 150/3) suit teams with junior reviewers or infrequent reviews. Higher values (e.g. 500/8) suit teams with strong test coverage and fast CI. Changes to these numbers should be a team decision documented in a PR. Deleted-only files do not count toward maxFilesPerChapter. Generated Sanity artifacts listed in excludeGlobs are committed to git but excluded from reviewability budget calculations."
+	}
+}

@@ -1,0 +1,35 @@
+---
+import type { AstroBlogPost } from '../../lib/content/blog';
+import { PortableText } from 'astro-portabletext';
+import PortableTextLinkMark from '../portableText/PortableTextLinkMark.astro';
+
+interface Props {
+	post: AstroBlogPost;
+}
+
+const { post } = Astro.props as Props;
+
+const components = {
+	mark: {
+		portableTextLink: PortableTextLinkMark
+	}
+};
+---
+
+<div class="mx-auto flex min-h-screen max-w-3xl flex-col gap-4 px-6 py-14">
+	<a
+		class="text-sm font-semibold tracking-[0.14em] text-emerald-700 uppercase"
+		href="/blog/">Back to Blog</a
+	>
+	<header class="space-y-3">
+		<h1 class="text-4xl leading-tight font-bold">{post.title}</h1>
+		{
+			post.description ? (
+				<p class="text-lg text-stone-700">{post.description}</p>
+			) : null
+		}
+	</header>
+	<article class="prose prose-stone mt-4 max-w-none">
+		<PortableText value={post.body} {components} />
+	</article>
+</div>

@@ -1,0 +1,23 @@
+---
+import '../styles/global.css';
+import HTML from './html.astro';
+import PortablePageTemplate from '../components/templates/PortablePageTemplate.astro';
+
+interface Props {
+	title: string;
+	description?: string;
+	body: any[];
+	urlPrefix: string;
+}
+
+const { title, description, body, urlPrefix } = Astro.props as Props;
+---
+
+<HTML title={title} description={description}>
+	<PortablePageTemplate
+		title={title}
+		description={description}
+		body={body}
+		urlPrefix={urlPrefix}
+	/>
+</HTML>

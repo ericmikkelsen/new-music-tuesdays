@@ -1,0 +1,29 @@
+---
+import { getAstroBlogPostBySlugDirect } from '../../../lib/content/blog';
+import BlogPost from '../../../layouts/BlogPost.astro';
+import HTML from '../../../layouts/html.astro';
+
+export const prerender = false;
+
+const slug = Astro.params.slug;
+const post = slug ? await getAstroBlogPostBySlugDirect(slug) : undefined;
+if (!post) {
+	Astro.response.status = 404;
+}
+
+const title = post?.title ?? 'Preview not found';
+const description =
+	post?.description ?? 'The requested preview blog post was not found.';
+---
+
+{
+	post ? (
+		<BlogPost title={title} description={description} post={post} />
+	) : (
+		<HTML title={title} description={description}>
+			<div class="mx-auto max-w-3xl px-6 py-14 text-stone-700">
+				Preview blog post not found.
+			</div>
+		</HTML>
+	)
+}

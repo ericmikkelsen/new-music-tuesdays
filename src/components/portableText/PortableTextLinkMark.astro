@@ -1,0 +1,16 @@
+---
+import type { MarkProps } from 'astro-portabletext/types';
+
+type PortableTextLinkNode = {
+	_type: 'portableTextLink';
+	href?: string;
+};
+
+type Props = MarkProps<PortableTextLinkNode>;
+
+const { node } = Astro.props as Props;
+---
+
+<a href={node.href}>
+	<slot />
+</a>

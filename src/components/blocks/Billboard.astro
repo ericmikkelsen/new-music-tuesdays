@@ -1,0 +1,64 @@
+---
+import type Link from '../../types/link';
+import type ImageType from '../../types/image';
+import type {
+	ArrayPageBuilderBlockByType,
+	BlockSettings
+} from '../../lib/content/pageBuilderTypes';
+import BlockWrapper from '../atoms/BlockWrapper.astro';
+import Heading from '../atoms/Heading.astro';
+import Image from '../atoms/Image.astro';
+
+/**
+ * Billboard block content plus shared renderer settings.
+ */
+interface Props
+	extends
+		Omit<ArrayPageBuilderBlockByType<'billboard'>, '_type'>,
+		BlockSettings {
+	link?: Link;
+	image?: ImageType;
+}
+
+const {
+	heading = '',
+	body = '',
+	as,
+	hLevel,
+	priority,
+	link = { text: '', url: '' },
+	image
+} = Astro.props as Props;
+---
+
+<BlockWrapper as={as} class="relative">
+	<div class="mx-auto md:min-h-[80vh] md:max-w-7xl md:p-[5%]">
+		<div
+			class="flex flex-col items-start gap-6 bg-red-200 p-[5%] md:max-w-xl md:rounded-3xl"
+		>
+			<Heading hLevel={hLevel} class="text-4xl font-bold md:text-6xl">
+				{heading}
+			</Heading>
+			{body.length ? <p class="text-xl">{body}</p> : null}
+			{
+				link?.text.length && link?.url.length ? (
+					<a
+						class="inline-block rounded-2xl bg-black p-4 text-white"
+						href={link.url}
+					>
+						{link.text}
+					</a>
+				) : null
+			}
+		</div>
+		{
+			image?.src ? (
+				<Image
+					{...(image as Required<ImageType>)}
+					priority={priority}
+					class="inset-0 -z-1 h-auto w-full object-cover md:absolute md:h-full"
+				/>
+			) : null
+		}
+	</div>
+</BlockWrapper>

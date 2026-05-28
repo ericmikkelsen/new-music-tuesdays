@@ -1,0 +1,13 @@
+---
+import '../styles/global.css';
+
+import BlocksPageTemplate from '../components/templates/BlocksPageTemplate.astro';
+import type { PageRouteProps } from '../lib/content/routeData';
+import HTML from './html.astro';
+
+const { title = '', description = '', page } = Astro.props as PageRouteProps;
+---
+
+<HTML title={title} description={description}>
+	<BlocksPageTemplate page={page} />
+</HTML>

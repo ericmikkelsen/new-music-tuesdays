@@ -1,0 +1,24 @@
+---
+/**
+ * Shared wrapper for block components so renderer-level semantics (`header` vs
+ * `section`) stay centralized and consistent.
+ */
+interface Props {
+	as?: 'header' | 'section';
+	class?: string;
+}
+
+const { as, class: className = '' }: Props = Astro.props;
+---
+
+{
+	as === 'header' ? (
+		<header class={className}>
+			<slot />
+		</header>
+	) : (
+		<section class={className}>
+			<slot />
+		</section>
+	)
+}

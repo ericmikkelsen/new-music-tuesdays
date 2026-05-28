@@ -1,0 +1,42 @@
+---
+import '../../styles/global.css';
+import HTML from '../../layouts/html.astro';
+import { getAstroBlogPosts } from '../../lib/content/blog';
+
+export const prerender = true;
+
+const posts = await getAstroBlogPosts();
+---
+
+<HTML title="Blog" description="Latest posts">
+	<header class="mx-auto max-w-3xl space-y-3 px-6 py-14">
+		<h1 class="text-4xl leading-tight font-bold">Blog</h1>
+	</header>
+	<section class="mx-auto max-w-3xl px-6 py-14">
+		{
+			posts.length === 0 ? (
+				<p class="mt-4 text-stone-700">
+					No posts yet. Create one in Sanity Studio.
+				</p>
+			) : (
+				<ul class="mt-4 grid gap-3">
+					{posts.map((post) => (
+						<li class="rounded-lg border border-stone-200 p-4">
+							<a
+								class="text-lg font-semibold text-emerald-700 underline underline-offset-4"
+								href={post.path}
+							>
+								{post.title}
+							</a>
+							{post.description ? (
+								<p class="mt-1 text-stone-700">
+									{post.description}
+								</p>
+							) : null}
+						</li>
+					))}
+				</ul>
+			)
+		}
+	</section>
+</HTML>

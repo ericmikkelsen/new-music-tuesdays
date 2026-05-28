@@ -1,0 +1,27 @@
+---
+import type ImageType from '../../types/image';
+import { Image as AstroImage } from 'astro:assets';
+interface Props extends ImageType {
+	class?: string;
+}
+/**
+ * @link https://www.youtube.com/watch?v=JhTR2fz68ec
+ */
+const {
+	src = '',
+	alt = '',
+	width,
+	height,
+	priority = false,
+	class: className
+} = Astro.props as Props;
+---
+
+<AstroImage
+	alt={alt}
+	class={className}
+	height={height}
+	src={src}
+	width={width}
+	priority={priority}
+/>

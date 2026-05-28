@@ -1,0 +1,13 @@
+---
+import '../styles/global.css';
+
+import HTML from './html.astro';
+import BlogPostTemplate from '../components/templates/BlogPostTemplate.astro';
+import type { BlogRouteProps } from '../lib/content/routeData';
+
+const { title = '', description = '', post } = Astro.props as BlogRouteProps;
+---
+
+<HTML title={title} description={description}>
+	<BlogPostTemplate post={post} />
+</HTML>

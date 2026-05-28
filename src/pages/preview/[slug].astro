@@ -1,0 +1,29 @@
+---
+import { getAstroPageBySlugDirect } from '../../lib/content/pages';
+import BlocksPage from '../../layouts/BlocksPage.astro';
+import HTML from '../../layouts/html.astro';
+
+export const prerender = false;
+
+const slug = Astro.params.slug;
+const page = slug ? await getAstroPageBySlugDirect(slug) : undefined;
+if (!page) {
+	Astro.response.status = 404;
+}
+
+const title = page?.title ?? 'Preview not found';
+const description =
+	page?.description ?? 'The requested preview page was not found.';
+---
+
+{
+	page ? (
+		<BlocksPage title={title} description={description} page={page} />
+	) : (
+		<HTML title={title} description={description}>
+			<div class="mx-auto max-w-3xl px-6 py-14 text-stone-700">
+				Preview page not found.
+			</div>
+		</HTML>
+	)
+}

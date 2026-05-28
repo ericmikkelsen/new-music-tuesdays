@@ -1,0 +1,4 @@
+# Treat generated artifacts as generated in GitHub diffs so they collapse by default.
+package-lock.json linguist-generated=true
+src/sanity/extract.json linguist-generated=true
+src/sanity/types.ts linguist-generated=true

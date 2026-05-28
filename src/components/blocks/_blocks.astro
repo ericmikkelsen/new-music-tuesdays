@@ -1,0 +1,17 @@
+---
+import BlockRenderer from './_blockRenderer.astro';
+import type { ArrayPageBuilderBlock } from '../../lib/content/pageBuilderTypes';
+
+interface Props {
+	blockData?: ArrayPageBuilderBlock[];
+}
+
+const { blockData } = Astro.props as Props;
+const normalizedBlockData = Array.isArray(blockData) ? blockData : [];
+---
+
+{
+	normalizedBlockData.map((data, index) => (
+		<BlockRenderer data={data} index={index} />
+	))
+}

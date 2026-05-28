@@ -1,0 +1,11 @@
+---
+import { getPageStaticPaths } from '../lib/content/routeData';
+import BlocksPage from '../layouts/BlocksPage.astro';
+
+export const prerender = true;
+export const getStaticPaths = getPageStaticPaths;
+
+const { title = '', description = '', page } = Astro.props;
+---
+
+<BlocksPage title={title} description={description} page={page} />

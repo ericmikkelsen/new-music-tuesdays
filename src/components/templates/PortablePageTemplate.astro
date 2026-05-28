@@ -1,0 +1,45 @@
+---
+import { PortableText } from 'astro-portabletext';
+import PortableTextLinkMark from '../portableText/PortableTextLinkMark.astro';
+
+interface Props {
+	title: string;
+	description?: string;
+	body: any[];
+	urlPrefix: string;
+}
+
+const { title, description, body, urlPrefix } = Astro.props as Props;
+const components = {
+	mark: {
+		portableTextLink: PortableTextLinkMark
+	}
+};
+---
+
+<div class="mx-auto flex min-h-screen max-w-3xl flex-col gap-4 px-6 py-14">
+	<a
+		class="text-sm font-semibold tracking-[0.14em] text-emerald-700 uppercase"
+		href={`/${urlPrefix}/`}
+	>
+		Back to {urlPrefix.charAt(0).toUpperCase() + urlPrefix.slice(1)}
+	</a>
+	<header class="space-y-3">
+		<h1 class="text-4xl leading-tight font-bold">{title}</h1>
+		{
+			description ? (
+				<p class="text-lg text-stone-700">{description}</p>
+			) : null
+		}
+	</header>
+	<article class="prose prose-stone mt-4 max-w-none">
+		<PortableText value={body} {components} />
+	</article>
+	{
+		!body?.length ? (
+			<p class="text-sm text-stone-600">
+				No portable text body configured for this page yet.
+			</p>
+		) : null
+	}
+</div>
