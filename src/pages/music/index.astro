@@ -37,7 +37,7 @@ const [featuredReleases, releases] = await Promise.all([
 									>
 										<div
 											class="relative p-6"
-											style={`background-image: linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.75)), url('${release.coverArt || ''}'); background-size: cover; background-position: center;`}
+											style={`background-image: linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.75)), url('${release.coverArtUrl || ''}'); background-size: cover; background-position: center;`}
 										>
 											<h3 class="text-2xl font-semibold group-hover:text-emerald-300">
 												{release.title}
@@ -84,7 +84,7 @@ const [featuredReleases, releases] = await Promise.all([
 										class="block space-y-2"
 									>
 										<img
-											src={release.coverArt}
+											src={release.coverArtUrl}
 											alt={`${release.title} cover`}
 											class="aspect-square w-full rounded-lg object-cover"
 										/>

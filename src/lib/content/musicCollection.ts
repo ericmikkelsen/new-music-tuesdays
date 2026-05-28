@@ -7,10 +7,12 @@ export type MusicRelease = {
 	artistName: string;
 	wikidataId?: string;
 	releaseDate?: string;
-	coverArt?: string;
+	coverArtUrl?: string;
+	coverArtPalette?: unknown;
 	genres: string[];
 	label?: string;
 	trackCount?: number;
+	trackList: string[];
 	producers: string[];
 	personnel: string[];
 	awards: string[];
@@ -32,10 +34,12 @@ const MUSIC_RELEASES_QUERY = `*[_type == "musicRelease" && defined(slug.current)
   artistName,
 	wikidataId,
   releaseDate,
-  coverArt,
+	"coverArtUrl": coalesce(coverArt.asset->url, coverArt),
+	"coverArtPalette": coverArt.asset->metadata.palette,
   genres,
   label,
   trackCount,
+	trackList,
 	producers,
 	personnel,
 	awards,
@@ -53,10 +57,12 @@ const MUSIC_RELEASE_BY_SLUG_QUERY = `*[_type == "musicRelease" && slug.current =
   artistName,
 	wikidataId,
   releaseDate,
-  coverArt,
+	"coverArtUrl": coalesce(coverArt.asset->url, coverArt),
+	"coverArtPalette": coverArt.asset->metadata.palette,
   genres,
   label,
   trackCount,
+	trackList,
 	producers,
 	personnel,
 	awards,
@@ -74,10 +80,12 @@ const FEATURED_RELEASES_QUERY = `*[_type == "musicRelease" && featuredPick == tr
   artistName,
 	wikidataId,
   releaseDate,
-  coverArt,
+	"coverArtUrl": coalesce(coverArt.asset->url, coverArt),
+	"coverArtPalette": coverArt.asset->metadata.palette,
   genres,
   label,
   trackCount,
+	trackList,
 	producers,
 	personnel,
 	awards,
@@ -99,6 +107,7 @@ export function mapSanityMusicRelease(
 		...entry,
 		slug: entry.slug,
 		genres: entry.genres ?? [],
+		trackList: entry.trackList ?? [],
 		producers: entry.producers ?? [],
 		personnel: entry.personnel ?? [],
 		awards: entry.awards ?? []

@@ -47,7 +47,8 @@ const NEW_MUSIC_TUESDAY_QUERY = `*[_type == "newMusicTuesday" && defined(slug.cu
     heroImages[]{"url": asset->url},
 		"heading": coalesce(heading, musicRelease->title),
 		"subheading": coalesce(subheading, musicRelease->artistName),
-		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt),
+		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt.asset->url, musicRelease->coverArt),
+		"trackList": coalesce(trackList, musicRelease->trackList, []),
 		"spotifyUrl": coalesce(spotifyUrl, musicRelease->itunesUrl),
 		"genres": coalesce(genres, musicRelease->genres, [])
   }
@@ -64,7 +65,8 @@ const NEW_MUSIC_TUESDAY_BY_SLUG_QUERY = `*[_type == "newMusicTuesday" && slug.cu
     heroImages[]{"url": asset->url},
 		"heading": coalesce(heading, musicRelease->title),
 		"subheading": coalesce(subheading, musicRelease->artistName),
-		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt),
+		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt.asset->url, musicRelease->coverArt),
+		"trackList": coalesce(trackList, musicRelease->trackList, []),
 		"spotifyUrl": coalesce(spotifyUrl, musicRelease->itunesUrl),
 		"genres": coalesce(genres, musicRelease->genres, [])
   }
@@ -81,7 +83,8 @@ const NEW_MUSIC_TUESDAY_LATEST_QUERY = `*[_type == "newMusicTuesday" && defined(
     heroImages[]{"url": asset->url},
 		"heading": coalesce(heading, musicRelease->title),
 		"subheading": coalesce(subheading, musicRelease->artistName),
-		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt),
+		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt.asset->url, musicRelease->coverArt),
+		"trackList": coalesce(trackList, musicRelease->trackList, []),
 		"spotifyUrl": coalesce(spotifyUrl, musicRelease->itunesUrl),
 		"genres": coalesce(genres, musicRelease->genres, [])
   }
