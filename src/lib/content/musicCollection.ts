@@ -1,31 +1,21 @@
 import { loadQuery } from './preview';
 
-export type SimilarArtist = {
-	name: string;
-	spotifyId: string;
-	imageUrl?: string;
-};
-
 export type MusicRelease = {
 	_id: string;
 	title: string;
 	slug: string;
 	artistName: string;
-	artistId?: string;
-	albumId?: string;
+	wikidataId?: string;
 	releaseDate?: string;
 	coverArt?: string;
 	genres: string[];
-	popularityScore?: number;
-	spotifyUrl?: string;
 	label?: string;
 	trackCount?: number;
-	featuredTrack?: string;
-	featuredTrackUrl?: string;
-	tracks: string[];
-	similarArtists: SimilarArtist[];
-	backgroundImageUrl?: string;
-	titleCardUrl?: string;
+	producers: string[];
+	personnel: string[];
+	awards: string[];
+	wikidataSummary?: string;
+	itunesUrl?: string;
 	featuredPick?: boolean;
 	editorialNote?: string;
 	publishedAt?: string;
@@ -40,21 +30,17 @@ const MUSIC_RELEASES_QUERY = `*[_type == "musicRelease" && defined(slug.current)
   title,
   "slug": slug.current,
   artistName,
-  artistId,
-  albumId,
+	wikidataId,
   releaseDate,
   coverArt,
   genres,
-  popularityScore,
-  spotifyUrl,
   label,
   trackCount,
-  featuredTrack,
-  featuredTrackUrl,
-  tracks,
-  similarArtists[]{name, spotifyId, imageUrl},
-  "backgroundImageUrl": backgroundImage.asset->url,
-  "titleCardUrl": titleCard.asset->url,
+	producers,
+	personnel,
+	awards,
+	wikidataSummary,
+	itunesUrl,
   featuredPick,
   editorialNote,
   publishedAt
@@ -65,21 +51,17 @@ const MUSIC_RELEASE_BY_SLUG_QUERY = `*[_type == "musicRelease" && slug.current =
   title,
   "slug": slug.current,
   artistName,
-  artistId,
-  albumId,
+	wikidataId,
   releaseDate,
   coverArt,
   genres,
-  popularityScore,
-  spotifyUrl,
   label,
   trackCount,
-  featuredTrack,
-  featuredTrackUrl,
-  tracks,
-  similarArtists[]{name, spotifyId, imageUrl},
-  "backgroundImageUrl": backgroundImage.asset->url,
-  "titleCardUrl": titleCard.asset->url,
+	producers,
+	personnel,
+	awards,
+	wikidataSummary,
+	itunesUrl,
   featuredPick,
   editorialNote,
   publishedAt
@@ -90,21 +72,17 @@ const FEATURED_RELEASES_QUERY = `*[_type == "musicRelease" && featuredPick == tr
   title,
   "slug": slug.current,
   artistName,
-  artistId,
-  albumId,
+	wikidataId,
   releaseDate,
   coverArt,
   genres,
-  popularityScore,
-  spotifyUrl,
   label,
   trackCount,
-  featuredTrack,
-  featuredTrackUrl,
-  tracks,
-  similarArtists[]{name, spotifyId, imageUrl},
-  "backgroundImageUrl": backgroundImage.asset->url,
-  "titleCardUrl": titleCard.asset->url,
+	producers,
+	personnel,
+	awards,
+	wikidataSummary,
+	itunesUrl,
   featuredPick,
   editorialNote,
   publishedAt
@@ -121,8 +99,9 @@ export function mapSanityMusicRelease(
 		...entry,
 		slug: entry.slug,
 		genres: entry.genres ?? [],
-		tracks: entry.tracks ?? [],
-		similarArtists: entry.similarArtists ?? []
+		producers: entry.producers ?? [],
+		personnel: entry.personnel ?? [],
+		awards: entry.awards ?? []
 	};
 }
 

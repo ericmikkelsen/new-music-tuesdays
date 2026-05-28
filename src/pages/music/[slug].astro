@@ -19,8 +19,6 @@ const release = await getMusicReleaseBySlug(Astro.params.slug ?? '');
 if (!release) {
 	throw Astro.redirect('/music/');
 }
-
-const backgroundImage = release.backgroundImageUrl || release.coverArt;
 ---
 
 <HTML
@@ -29,15 +27,6 @@ const backgroundImage = release.backgroundImageUrl || release.coverArt;
 >
 	<div class="min-h-screen bg-black text-white">
 		<section class="relative isolate overflow-hidden">
-			{
-				backgroundImage ? (
-					<img
-						src={backgroundImage}
-						alt={release.title}
-						class="absolute inset-0 -z-10 h-full w-full object-cover blur-md brightness-40"
-					/>
-				) : null
-			}
 			<div
 				class="mx-auto grid max-w-6xl gap-8 px-6 py-14 md:grid-cols-[320px_1fr]"
 			>
@@ -47,15 +36,6 @@ const backgroundImage = release.backgroundImageUrl || release.coverArt;
 					class="w-full rounded-xl object-cover"
 				/>
 				<div class="space-y-4">
-					{
-						release.titleCardUrl ? (
-							<img
-								src={release.titleCardUrl}
-								alt={`${release.title} title card`}
-								class="max-h-24 max-w-full mix-blend-multiply"
-							/>
-						) : null
-					}
 					<h1 class="text-4xl font-bold">{release.title}</h1>
 					<p class="text-lg text-stone-200">{release.artistName}</p>
 					<p class="text-stone-300">
@@ -63,25 +43,6 @@ const backgroundImage = release.backgroundImageUrl || release.coverArt;
 							release.trackCount
 						} tracks
 					</p>
-					<div
-						class="h-2 w-full overflow-hidden rounded bg-stone-800"
-					>
-						<div
-							class="h-full bg-emerald-400"
-							style={`width: ${Math.max(0, Math.min(100, release.popularityScore ?? 0))}%`}
-						>
-						</div>
-					</div>
-					{
-						release.featuredTrack && release.featuredTrackUrl ? (
-							<a
-								class="text-emerald-300 underline"
-								href={release.featuredTrackUrl}
-							>
-								Featured track: {release.featuredTrack}
-							</a>
-						) : null
-					}
 					{
 						release.editorialNote ? (
 							<p>{release.editorialNote}</p>
@@ -99,42 +60,63 @@ const backgroundImage = release.backgroundImageUrl || release.coverArt;
 						) : null
 					}
 					{
-						release.spotifyUrl ? (
+						release.itunesUrl ? (
 							<a
-								href={release.spotifyUrl}
+								href={release.itunesUrl}
 								class="inline-block rounded-full bg-emerald-500 px-4 py-2 font-semibold text-black"
 							>
-								Open in Spotify
+								Open in iTunes
 							</a>
+						) : null
+					}
+					{
+						release.wikidataSummary ? (
+							<p class="text-sm text-stone-400">
+								{release.wikidataSummary}
+							</p>
 						) : null
 					}
 				</div>
 			</div>
 		</section>
 
-		<section class="mx-auto max-w-6xl space-y-4 px-6 py-10">
-			<h2 class="text-2xl font-semibold">Track list</h2>
-			<ol class="list-decimal space-y-1 pl-6 text-stone-300">
-				{release.tracks.map((track) => <li>{track}</li>)}
-			</ol>
-		</section>
+		{
+			release.personnel.length ? (
+				<section class="mx-auto max-w-6xl space-y-4 px-6 pb-14">
+					<h2 class="text-2xl font-semibold">Personnel</h2>
+					<ul class="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+						{release.personnel.map((person) => (
+							<li class="rounded-lg border border-stone-800 bg-stone-950 p-3">
+								{person}
+							</li>
+						))}
+					</ul>
+				</section>
+			) : null
+		}
 
 		{
-			release.similarArtists.length ? (
+			release.producers.length ? (
 				<section class="mx-auto max-w-6xl space-y-4 px-6 pb-14">
-					<h2 class="text-2xl font-semibold">Similar artists</h2>
-					<ul class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-						{release.similarArtists.map((artist) => (
-							<li class="rounded-lg border border-stone-800 bg-stone-950 p-4">
-								{artist.imageUrl ? (
-									<img
-										src={artist.imageUrl}
-										alt={artist.name}
-										class="mb-2 aspect-square w-full rounded object-cover"
-									/>
-								) : null}
-								<p class="font-medium">{artist.name}</p>
+					<h2 class="text-2xl font-semibold">Producers</h2>
+					<ul class="flex flex-wrap gap-2 text-stone-300">
+						{release.producers.map((producer) => (
+							<li class="rounded-full border border-stone-700 px-3 py-1">
+								{producer}
 							</li>
+						))}
+					</ul>
+				</section>
+			) : null
+		}
+
+		{
+			release.awards.length ? (
+				<section class="mx-auto max-w-6xl space-y-4 px-6 pb-14">
+					<h2 class="text-2xl font-semibold">Awards</h2>
+					<ul class="list-disc space-y-1 pl-6 text-stone-300">
+						{release.awards.map((award) => (
+							<li>{award}</li>
 						))}
 					</ul>
 				</section>
