@@ -374,6 +374,13 @@
 						"type": "string"
 					},
 					"optional": true
+				},
+				"showYourWork": {
+					"type": "objectAttribute",
+					"value": {
+						"type": "string"
+					},
+					"optional": true
 				}
 			}
 		}

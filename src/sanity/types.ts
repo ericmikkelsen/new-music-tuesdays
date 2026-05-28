@@ -77,6 +77,7 @@ export type AlbumReviewBlock = {
 		_type: 'image';
 	};
 	body?: string;
+	showYourWork?: string;
 };
 
 export type NewMusicHeroBlock = {
