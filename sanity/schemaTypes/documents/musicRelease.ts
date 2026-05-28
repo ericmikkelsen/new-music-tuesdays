@@ -39,9 +39,12 @@ export const musicRelease = defineType({
 		}),
 		defineField({
 			name: 'coverArt',
-			title: 'Cover art URL',
-			type: 'url',
-			readOnly: true
+			title: 'Cover art',
+			type: 'image',
+			options: {
+				hotspot: false,
+				metadata: ['palette']
+			}
 		}),
 		defineField({
 			name: 'genres',
@@ -60,6 +63,13 @@ export const musicRelease = defineType({
 			name: 'trackCount',
 			title: 'Track count',
 			type: 'number',
+			readOnly: true
+		}),
+		defineField({
+			name: 'trackList',
+			title: 'Track list',
+			type: 'array',
+			of: [defineArrayMember({ type: 'string' })],
 			readOnly: true
 		}),
 		defineField({
@@ -116,7 +126,8 @@ export const musicRelease = defineType({
 	preview: {
 		select: {
 			title: 'title',
-			subtitle: 'artistName'
+			subtitle: 'artistName',
+			media: 'coverArt'
 		}
 	}
 });

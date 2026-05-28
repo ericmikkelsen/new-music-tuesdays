@@ -33,27 +33,42 @@ export const albumReviewBlock = defineType({
 		select: {
 			albumName: 'musicRelease.title',
 			artistName: 'musicRelease.artistName',
-			coverArt: 'musicRelease.coverArt'
+			coverArt: 'musicRelease.coverArt',
+			coverArtUrl: 'musicRelease.coverArt.asset->url',
+			coverArtLegacy: 'musicRelease.coverArt'
 		},
-		prepare({ albumName, artistName, coverArt }) {
+		prepare({
+			albumName,
+			artistName,
+			coverArt,
+			coverArtUrl,
+			coverArtLegacy
+		}) {
 			const title = albumName
 				? `${albumName} by ${artistName || 'Unknown artist'}`
 				: 'Album review';
+			const mediaUrl =
+				coverArtUrl ||
+				(typeof coverArtLegacy === 'string'
+					? coverArtLegacy
+					: undefined);
 
 			return {
 				title,
 				subtitle: 'Album review',
-				media: coverArt
-					? createElement('img', {
-							src: coverArt,
-							alt: title,
-							style: {
-								width: '100%',
-								height: '100%',
-								objectFit: 'cover'
-							}
-						})
-					: undefined
+				media:
+					coverArt ??
+					(mediaUrl
+						? createElement('img', {
+								src: mediaUrl,
+								alt: title,
+								style: {
+									width: '100%',
+									height: '100%',
+									objectFit: 'cover'
+								}
+							})
+						: undefined)
 			};
 		}
 	}

@@ -30,7 +30,7 @@ export const newMusicHeroBlock = defineType({
 				})
 			],
 			validation: (rule) => rule.max(4),
-			readOnly: true
+			readOnly: false
 		})
 	],
 	preview: {

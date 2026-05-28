@@ -143,228 +143,11 @@
 						"value": "albumReviewBlock"
 					}
 				},
-				"heading": {
-					"type": "objectAttribute",
-					"value": {
-						"type": "string"
-					},
-					"optional": true
-				},
-				"subheading": {
-					"type": "objectAttribute",
-					"value": {
-						"type": "string"
-					},
-					"optional": true
-				},
-				"trackList": {
-					"type": "objectAttribute",
-					"value": {
-						"type": "array",
-						"of": {
-							"type": "string"
-						}
-					},
-					"optional": true
-				},
-				"featuredTrack": {
-					"type": "objectAttribute",
-					"value": {
-						"type": "string"
-					},
-					"optional": true
-				},
-				"featuredTrackUrl": {
-					"type": "objectAttribute",
-					"value": {
-						"type": "string"
-					},
-					"optional": true
-				},
-				"spotifyUrl": {
-					"type": "objectAttribute",
-					"value": {
-						"type": "string"
-					},
-					"optional": true
-				},
-				"genres": {
-					"type": "objectAttribute",
-					"value": {
-						"type": "array",
-						"of": {
-							"type": "string"
-						}
-					},
-					"optional": true
-				},
-				"wikidataSummary": {
-					"type": "objectAttribute",
-					"value": {
-						"type": "string"
-					},
-					"optional": true
-				},
 				"musicRelease": {
 					"type": "objectAttribute",
 					"value": {
 						"type": "inline",
 						"name": "musicRelease.reference"
-					},
-					"optional": true
-				},
-				"albumArt": {
-					"type": "objectAttribute",
-					"value": {
-						"type": "object",
-						"attributes": {
-							"asset": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "inline",
-									"name": "sanity.imageAsset.reference"
-								},
-								"optional": true
-							},
-							"media": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "unknown"
-								},
-								"optional": true
-							},
-							"hotspot": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "inline",
-									"name": "sanity.imageHotspot"
-								},
-								"optional": true
-							},
-							"crop": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "inline",
-									"name": "sanity.imageCrop"
-								},
-								"optional": true
-							},
-							"_type": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "string",
-									"value": "image"
-								}
-							}
-						}
-					},
-					"optional": true
-				},
-				"backgroundImage": {
-					"type": "objectAttribute",
-					"value": {
-						"type": "object",
-						"attributes": {
-							"asset": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "inline",
-									"name": "sanity.imageAsset.reference"
-								},
-								"optional": true
-							},
-							"media": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "unknown"
-								},
-								"optional": true
-							},
-							"hotspot": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "inline",
-									"name": "sanity.imageHotspot"
-								},
-								"optional": true
-							},
-							"crop": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "inline",
-									"name": "sanity.imageCrop"
-								},
-								"optional": true
-							},
-							"instruction": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "string"
-								},
-								"optional": true
-							},
-							"_type": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "string",
-									"value": "image"
-								}
-							}
-						}
-					},
-					"optional": true
-				},
-				"titleCard": {
-					"type": "objectAttribute",
-					"value": {
-						"type": "object",
-						"attributes": {
-							"asset": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "inline",
-									"name": "sanity.imageAsset.reference"
-								},
-								"optional": true
-							},
-							"media": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "unknown"
-								},
-								"optional": true
-							},
-							"hotspot": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "inline",
-									"name": "sanity.imageHotspot"
-								},
-								"optional": true
-							},
-							"crop": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "inline",
-									"name": "sanity.imageCrop"
-								},
-								"optional": true
-							},
-							"instruction": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "string"
-								},
-								"optional": true
-							},
-							"_type": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "string",
-									"value": "image"
-								}
-							}
-						}
 					},
 					"optional": true
 				},
@@ -1587,14 +1370,7 @@
 				},
 				"optional": true
 			},
-			"artistId": {
-				"type": "objectAttribute",
-				"value": {
-					"type": "string"
-				},
-				"optional": true
-			},
-			"albumId": {
+			"wikidataId": {
 				"type": "objectAttribute",
 				"value": {
 					"type": "string"
@@ -1611,7 +1387,47 @@
 			"coverArt": {
 				"type": "objectAttribute",
 				"value": {
-					"type": "string"
+					"type": "object",
+					"attributes": {
+						"asset": {
+							"type": "objectAttribute",
+							"value": {
+								"type": "inline",
+								"name": "sanity.imageAsset.reference"
+							},
+							"optional": true
+						},
+						"media": {
+							"type": "objectAttribute",
+							"value": {
+								"type": "unknown"
+							},
+							"optional": true
+						},
+						"hotspot": {
+							"type": "objectAttribute",
+							"value": {
+								"type": "inline",
+								"name": "sanity.imageHotspot"
+							},
+							"optional": true
+						},
+						"crop": {
+							"type": "objectAttribute",
+							"value": {
+								"type": "inline",
+								"name": "sanity.imageCrop"
+							},
+							"optional": true
+						},
+						"_type": {
+							"type": "objectAttribute",
+							"value": {
+								"type": "string",
+								"value": "image"
+							}
+						}
+					}
 				},
 				"optional": true
 			},
@@ -1622,20 +1438,6 @@
 					"of": {
 						"type": "string"
 					}
-				},
-				"optional": true
-			},
-			"popularityScore": {
-				"type": "objectAttribute",
-				"value": {
-					"type": "number"
-				},
-				"optional": true
-			},
-			"spotifyUrl": {
-				"type": "objectAttribute",
-				"value": {
-					"type": "string"
 				},
 				"optional": true
 			},
@@ -1653,21 +1455,7 @@
 				},
 				"optional": true
 			},
-			"featuredTrack": {
-				"type": "objectAttribute",
-				"value": {
-					"type": "string"
-				},
-				"optional": true
-			},
-			"featuredTrackUrl": {
-				"type": "objectAttribute",
-				"value": {
-					"type": "string"
-				},
-				"optional": true
-			},
-			"tracks": {
+			"trackList": {
 				"type": "objectAttribute",
 				"value": {
 					"type": "array",
@@ -1677,155 +1465,47 @@
 				},
 				"optional": true
 			},
-			"similarArtists": {
+			"producers": {
 				"type": "objectAttribute",
 				"value": {
 					"type": "array",
 					"of": {
-						"type": "object",
-						"attributes": {
-							"name": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "string"
-								},
-								"optional": true
-							},
-							"spotifyId": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "string"
-								},
-								"optional": true
-							},
-							"imageUrl": {
-								"type": "objectAttribute",
-								"value": {
-									"type": "string"
-								},
-								"optional": true
-							}
-						},
-						"rest": {
-							"type": "object",
-							"attributes": {
-								"_key": {
-									"type": "objectAttribute",
-									"value": {
-										"type": "string"
-									}
-								}
-							}
-						}
+						"type": "string"
 					}
 				},
 				"optional": true
 			},
-			"backgroundImage": {
+			"personnel": {
 				"type": "objectAttribute",
 				"value": {
-					"type": "object",
-					"attributes": {
-						"asset": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "inline",
-								"name": "sanity.imageAsset.reference"
-							},
-							"optional": true
-						},
-						"media": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "unknown"
-							},
-							"optional": true
-						},
-						"hotspot": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "inline",
-								"name": "sanity.imageHotspot"
-							},
-							"optional": true
-						},
-						"crop": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "inline",
-								"name": "sanity.imageCrop"
-							},
-							"optional": true
-						},
-						"instruction": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "string"
-							},
-							"optional": true
-						},
-						"_type": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "string",
-								"value": "image"
-							}
-						}
+					"type": "array",
+					"of": {
+						"type": "string"
 					}
 				},
 				"optional": true
 			},
-			"titleCard": {
+			"awards": {
 				"type": "objectAttribute",
 				"value": {
-					"type": "object",
-					"attributes": {
-						"asset": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "inline",
-								"name": "sanity.imageAsset.reference"
-							},
-							"optional": true
-						},
-						"media": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "unknown"
-							},
-							"optional": true
-						},
-						"hotspot": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "inline",
-								"name": "sanity.imageHotspot"
-							},
-							"optional": true
-						},
-						"crop": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "inline",
-								"name": "sanity.imageCrop"
-							},
-							"optional": true
-						},
-						"instruction": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "string"
-							},
-							"optional": true
-						},
-						"_type": {
-							"type": "objectAttribute",
-							"value": {
-								"type": "string",
-								"value": "image"
-							}
-						}
+					"type": "array",
+					"of": {
+						"type": "string"
 					}
+				},
+				"optional": true
+			},
+			"wikidataSummary": {
+				"type": "objectAttribute",
+				"value": {
+					"type": "string"
+				},
+				"optional": true
+			},
+			"itunesUrl": {
+				"type": "objectAttribute",
+				"value": {
+					"type": "string"
 				},
 				"optional": true
 			},

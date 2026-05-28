@@ -44,38 +44,7 @@ export type MusicReleaseReference = {
 
 export type AlbumReviewBlock = {
 	_type: 'albumReviewBlock';
-	heading?: string;
-	subheading?: string;
-	trackList?: Array<string>;
-	featuredTrack?: string;
-	featuredTrackUrl?: string;
-	spotifyUrl?: string;
-	genres?: Array<string>;
-	wikidataSummary?: string;
 	musicRelease?: MusicReleaseReference;
-	albumArt?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-	};
-	backgroundImage?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		instruction?: string;
-		_type: 'image';
-	};
-	titleCard?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		instruction?: string;
-		_type: 'image';
-	};
 	body?: string;
 	showYourWork?: string;
 };
@@ -273,40 +242,24 @@ export type MusicRelease = {
 	title?: string;
 	slug?: Slug;
 	artistName?: string;
-	artistId?: string;
-	albumId?: string;
+	wikidataId?: string;
 	releaseDate?: string;
-	coverArt?: string;
+	coverArt?: {
+		asset?: SanityImageAssetReference;
+		media?: unknown;
+		hotspot?: SanityImageHotspot;
+		crop?: SanityImageCrop;
+		_type: 'image';
+	};
 	genres?: Array<string>;
-	popularityScore?: number;
-	spotifyUrl?: string;
 	label?: string;
 	trackCount?: number;
-	featuredTrack?: string;
-	featuredTrackUrl?: string;
-	tracks?: Array<string>;
-	similarArtists?: Array<{
-		name?: string;
-		spotifyId?: string;
-		imageUrl?: string;
-		_key: string;
-	}>;
-	backgroundImage?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		instruction?: string;
-		_type: 'image';
-	};
-	titleCard?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		instruction?: string;
-		_type: 'image';
-	};
+	trackList?: Array<string>;
+	producers?: Array<string>;
+	personnel?: Array<string>;
+	awards?: Array<string>;
+	wikidataSummary?: string;
+	itunesUrl?: string;
 	featuredPick?: boolean;
 	editorialNote?: string;
 	publishedAt?: string;
