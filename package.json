@@ -19,7 +19,7 @@
 		"test": "node --import tsx --test tests/**/*.test.ts",
 		"prepare": "husky",
 		"format": "prettier --write .",
-		"seed:music": "npx tsx scripts/seed-music.ts"
+		"seed:music": "node --env-file=.env --import tsx scripts/seed-music.ts"
 	},
 	"lint-staged": {
 		"*.{js,jsx,ts,tsx,mjs,cjs,vue,svelte,astro,css,scss,sass,less,html,svg,json,yaml,yml,md}": "prettier --write"
