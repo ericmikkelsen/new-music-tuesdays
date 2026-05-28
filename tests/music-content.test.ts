@@ -34,13 +34,11 @@ test('mapSanityNewMusicTuesdayIssue maps known block types only', () => {
 			},
 			{
 				_type: 'albumReviewBlock',
+				musicRelease: { _ref: 'release-1' },
 				heading: 'Album',
 				subheading: 'Artist',
 				body: 'Body',
-				trackList: ['One'],
 				albumArtUrl: 'https://example.com/album.jpg',
-				featuredTrack: 'One',
-				featuredTrackUrl: 'https://example.com/track',
 				spotifyUrl: 'https://open.spotify.com/album/x',
 				genres: ['indie']
 			},

@@ -9,9 +9,7 @@ import {
 	billboardType,
 	listScrollerType,
 	peopleRefsType,
-	richTextType,
-	newMusicHeroBlock,
-	albumReviewBlock
+	richTextType
 } from './objects/arrayBlockPrimitives';
 import { albumReviewBlock } from './objects/albumReviewBlock';
 import {

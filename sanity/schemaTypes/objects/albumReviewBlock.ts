@@ -1,83 +1,11 @@
-import { defineArrayMember, defineField, defineType } from 'sanity';
-
-const aiAssistImageField = (name: string, title: string) =>
-	defineField({
-		name,
-		title,
-		type: 'image',
-		readOnly: true,
-		fields: [
-			defineField({
-				name: 'instruction',
-				title: 'Instruction',
-				type: 'text',
-				rows: 3
-			})
-		],
-		options: {
-			hotspot: false,
-			aiAssist: {
-				imageInstructionField: 'instruction'
-			}
-		}
-	});
+import { defineField, defineType } from 'sanity';
+import { createElement } from 'react';
 
 export const albumReviewBlock = defineType({
 	name: 'albumReviewBlock',
 	title: 'Album Review Block',
 	type: 'object',
 	fields: [
-		defineField({
-			name: 'heading',
-			title: 'Heading',
-			type: 'string',
-			readOnly: true
-		}),
-		defineField({
-			name: 'subheading',
-			title: 'Subheading',
-			type: 'string',
-			readOnly: true
-		}),
-		defineField({
-			name: 'trackList',
-			title: 'Track list',
-			type: 'array',
-			of: [defineArrayMember({ type: 'string' })],
-			readOnly: true
-		}),
-		defineField({
-			name: 'featuredTrack',
-			title: 'Featured track',
-			type: 'string',
-			readOnly: true
-		}),
-		defineField({
-			name: 'featuredTrackUrl',
-			title: 'Featured track URL',
-			type: 'url',
-			readOnly: true
-		}),
-		defineField({
-			name: 'spotifyUrl',
-			title: 'Spotify URL',
-			type: 'url',
-			readOnly: true
-		}),
-		defineField({
-			name: 'genres',
-			title: 'Genres',
-			type: 'array',
-			of: [defineArrayMember({ type: 'string' })],
-			readOnly: true
-		}),
-		defineField({
-			name: 'wikidataSummary',
-			title: 'Wikidata summary',
-			type: 'text',
-			readOnly: true,
-			hidden: true
-		}),
 		defineField({
 			name: 'musicRelease',
 			title: 'Music release',
@@ -86,25 +14,47 @@ export const albumReviewBlock = defineType({
 			readOnly: true
 		}),
 		defineField({
-			name: 'albumArt',
-			title: 'Album art',
-			type: 'image',
-			readOnly: true,
-			options: { hotspot: false }
-		}),
-		aiAssistImageField('backgroundImage', 'Background image'),
-		aiAssistImageField('titleCard', 'Title card'),
-		defineField({
 			name: 'body',
 			title: 'Body',
 			type: 'text',
 			rows: 4
+		}),
+		defineField({
+			name: 'showYourWork',
+			title: 'Show Your Work',
+			type: 'text',
+			rows: 14,
+			readOnly: true,
+			description:
+				'Editor-facing provenance note showing the data, assumptions, and source trail used to shape the review draft.'
 		})
 	],
 	preview: {
 		select: {
-			title: 'heading',
-			subtitle: 'subheading'
+			albumName: 'musicRelease.title',
+			artistName: 'musicRelease.artistName',
+			coverArt: 'musicRelease.coverArt'
+		},
+		prepare({ albumName, artistName, coverArt }) {
+			const title = albumName
+				? `${albumName} by ${artistName || 'Unknown artist'}`
+				: 'Album review';
+
+			return {
+				title,
+				subtitle: 'Album review',
+				media: coverArt
+					? createElement('img', {
+							src: coverArt,
+							alt: title,
+							style: {
+								width: '100%',
+								height: '100%',
+								objectFit: 'cover'
+							}
+						})
+					: undefined
+			};
 		}
 	}
 });

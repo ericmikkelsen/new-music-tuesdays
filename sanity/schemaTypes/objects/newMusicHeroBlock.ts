@@ -36,7 +36,10 @@ export const newMusicHeroBlock = defineType({
 	preview: {
 		select: { title: 'heading' },
 		prepare({ title }: { title?: string }) {
-			return { title: title ?? 'New Music Hero' };
+			return {
+				title: title ?? 'New Music Hero',
+				subtitle: 'New music hero'
+			};
 		}
 	}
 });

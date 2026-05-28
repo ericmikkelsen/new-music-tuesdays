@@ -16,8 +16,6 @@ export type AlbumReviewBlock = {
 	body: string;
 	trackList: string[];
 	albumArtUrl: string;
-	backgroundImageUrl?: string;
-	titleCardUrl?: string;
 	featuredTrack: string;
 	featuredTrackUrl: string;
 	spotifyUrl: string;
@@ -47,9 +45,11 @@ const NEW_MUSIC_TUESDAY_QUERY = `*[_type == "newMusicTuesday" && defined(slug.cu
     ...,
     _type,
     heroImages[]{"url": asset->url},
-    "albumArtUrl": albumArt.asset->url,
-    "backgroundImageUrl": backgroundImage.asset->url,
-    "titleCardUrl": titleCard.asset->url
+		"heading": coalesce(heading, musicRelease->title),
+		"subheading": coalesce(subheading, musicRelease->artistName),
+		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt),
+		"spotifyUrl": coalesce(spotifyUrl, musicRelease->itunesUrl),
+		"genres": coalesce(genres, musicRelease->genres, [])
   }
 } | order(publishedAt desc)`;
 
@@ -62,9 +62,11 @@ const NEW_MUSIC_TUESDAY_BY_SLUG_QUERY = `*[_type == "newMusicTuesday" && slug.cu
     ...,
     _type,
     heroImages[]{"url": asset->url},
-    "albumArtUrl": albumArt.asset->url,
-    "backgroundImageUrl": backgroundImage.asset->url,
-    "titleCardUrl": titleCard.asset->url
+		"heading": coalesce(heading, musicRelease->title),
+		"subheading": coalesce(subheading, musicRelease->artistName),
+		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt),
+		"spotifyUrl": coalesce(spotifyUrl, musicRelease->itunesUrl),
+		"genres": coalesce(genres, musicRelease->genres, [])
   }
 }`;
 
@@ -77,9 +79,11 @@ const NEW_MUSIC_TUESDAY_LATEST_QUERY = `*[_type == "newMusicTuesday" && defined(
     ...,
     _type,
     heroImages[]{"url": asset->url},
-    "albumArtUrl": albumArt.asset->url,
-    "backgroundImageUrl": backgroundImage.asset->url,
-    "titleCardUrl": titleCard.asset->url
+		"heading": coalesce(heading, musicRelease->title),
+		"subheading": coalesce(subheading, musicRelease->artistName),
+		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt),
+		"spotifyUrl": coalesce(spotifyUrl, musicRelease->itunesUrl),
+		"genres": coalesce(genres, musicRelease->genres, [])
   }
 }`;
 
@@ -103,8 +107,6 @@ function mapNMTBlock(block: any): NMTBlock | null {
 			body: block.body ?? '',
 			trackList: Array.isArray(block.trackList) ? block.trackList : [],
 			albumArtUrl: block.albumArtUrl ?? '',
-			backgroundImageUrl: block.backgroundImageUrl,
-			titleCardUrl: block.titleCardUrl,
 			featuredTrack: block.featuredTrack ?? '',
 			featuredTrackUrl: block.featuredTrackUrl ?? '',
 			spotifyUrl: block.spotifyUrl ?? '',
