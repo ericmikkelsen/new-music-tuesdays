@@ -1,0 +1,144 @@
+---
+import '../../styles/global.css';
+import HTML from '../../layouts/html.astro';
+import {
+	getMusicReleaseBySlug,
+	getMusicReleases
+} from '../../lib/content/musicCollection';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+	const releases = await getMusicReleases();
+	return releases.map((release) => ({
+		params: { slug: release.slug }
+	}));
+}
+
+const release = await getMusicReleaseBySlug(Astro.params.slug ?? '');
+if (!release) {
+	throw Astro.redirect('/music/');
+}
+
+const backgroundImage = release.backgroundImageUrl || release.coverArt;
+---
+
+<HTML
+	title={`${release.title} — ${release.artistName}`}
+	description={release.editorialNote || ''}
+>
+	<div class="min-h-screen bg-black text-white">
+		<section class="relative isolate overflow-hidden">
+			{
+				backgroundImage ? (
+					<img
+						src={backgroundImage}
+						alt={release.title}
+						class="absolute inset-0 -z-10 h-full w-full object-cover blur-md brightness-40"
+					/>
+				) : null
+			}
+			<div
+				class="mx-auto grid max-w-6xl gap-8 px-6 py-14 md:grid-cols-[320px_1fr]"
+			>
+				<img
+					src={release.coverArt}
+					alt={`${release.title} cover art`}
+					class="w-full rounded-xl object-cover"
+				/>
+				<div class="space-y-4">
+					{
+						release.titleCardUrl ? (
+							<img
+								src={release.titleCardUrl}
+								alt={`${release.title} title card`}
+								class="max-h-24 max-w-full mix-blend-multiply"
+							/>
+						) : null
+					}
+					<h1 class="text-4xl font-bold">{release.title}</h1>
+					<p class="text-lg text-stone-200">{release.artistName}</p>
+					<p class="text-stone-300">
+						{release.releaseDate} • {release.label} • {
+							release.trackCount
+						} tracks
+					</p>
+					<div
+						class="h-2 w-full overflow-hidden rounded bg-stone-800"
+					>
+						<div
+							class="h-full bg-emerald-400"
+							style={`width: ${Math.max(0, Math.min(100, release.popularityScore ?? 0))}%`}
+						>
+						</div>
+					</div>
+					{
+						release.featuredTrack && release.featuredTrackUrl ? (
+							<a
+								class="text-emerald-300 underline"
+								href={release.featuredTrackUrl}
+							>
+								Featured track: {release.featuredTrack}
+							</a>
+						) : null
+					}
+					{
+						release.editorialNote ? (
+							<p>{release.editorialNote}</p>
+						) : null
+					}
+					{
+						release.genres.length ? (
+							<div class="flex flex-wrap gap-2">
+								{release.genres.map((genre) => (
+									<span class="rounded-full border border-stone-300 px-3 py-1 text-xs">
+										{genre}
+									</span>
+								))}
+							</div>
+						) : null
+					}
+					{
+						release.spotifyUrl ? (
+							<a
+								href={release.spotifyUrl}
+								class="inline-block rounded-full bg-emerald-500 px-4 py-2 font-semibold text-black"
+							>
+								Open in Spotify
+							</a>
+						) : null
+					}
+				</div>
+			</div>
+		</section>
+
+		<section class="mx-auto max-w-6xl space-y-4 px-6 py-10">
+			<h2 class="text-2xl font-semibold">Track list</h2>
+			<ol class="list-decimal space-y-1 pl-6 text-stone-300">
+				{release.tracks.map((track) => <li>{track}</li>)}
+			</ol>
+		</section>
+
+		{
+			release.similarArtists.length ? (
+				<section class="mx-auto max-w-6xl space-y-4 px-6 pb-14">
+					<h2 class="text-2xl font-semibold">Similar artists</h2>
+					<ul class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+						{release.similarArtists.map((artist) => (
+							<li class="rounded-lg border border-stone-800 bg-stone-950 p-4">
+								{artist.imageUrl ? (
+									<img
+										src={artist.imageUrl}
+										alt={artist.name}
+										class="mb-2 aspect-square w-full rounded object-cover"
+									/>
+								) : null}
+								<p class="font-medium">{artist.name}</p>
+							</li>
+						))}
+					</ul>
+				</section>
+			) : null
+		}
+	</div>
+</HTML>

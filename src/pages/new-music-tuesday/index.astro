@@ -1,0 +1,51 @@
+---
+import '../../styles/global.css';
+import HTML from '../../layouts/html.astro';
+import { getNewMusicTuesdayIssues } from '../../lib/content/newMusicTuesdayCollection';
+
+export const prerender = true;
+
+const issues = await getNewMusicTuesdayIssues();
+---
+
+<HTML
+	title="New Music Tuesday"
+	description="Archive of New Music Tuesday issues"
+>
+	<div class="mx-auto max-w-6xl space-y-6 px-6 py-14">
+		<h1 class="text-4xl font-bold">New Music Tuesday</h1>
+		{
+			issues.length ? (
+				<ul class="grid gap-4 md:grid-cols-2">
+					{issues.map((issue) => {
+						const firstBlock = issue.blocks[0];
+						const previewDescription =
+							firstBlock?._type === 'newMusicHeroBlock'
+								? firstBlock.description
+								: '';
+						return (
+							<li class="rounded-xl border border-stone-200 p-5">
+								<a
+									href={`/new-music-tuesday/${issue.slug}/`}
+									class="text-2xl font-semibold text-emerald-700 underline"
+								>
+									{issue.title}
+								</a>
+								<p class="mt-1 text-sm text-stone-500">
+									{issue.publishedAt}
+								</p>
+								{previewDescription ? (
+									<p class="mt-3 text-stone-700">
+										{previewDescription}
+									</p>
+								) : null}
+							</li>
+						);
+					})}
+				</ul>
+			) : (
+				<p>No issues yet.</p>
+			)
+		}
+	</div>
+</HTML>

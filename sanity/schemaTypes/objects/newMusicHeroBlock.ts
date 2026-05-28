@@ -1,0 +1,42 @@
+import { defineArrayMember, defineField, defineType } from 'sanity';
+
+export const newMusicHeroBlock = defineType({
+	name: 'newMusicHeroBlock',
+	title: 'New Music Hero',
+	type: 'object',
+	fields: [
+		defineField({
+			name: 'heading',
+			title: 'Heading',
+			type: 'string',
+			readOnly: true,
+			description: 'Auto-populated: "New Music Tuesday {DATE}"'
+		}),
+		defineField({
+			name: 'description',
+			title: 'Description',
+			type: 'text',
+			rows: 3,
+			description: 'Hero intro paragraph. Populated by Agent Actions.'
+		}),
+		defineField({
+			name: 'heroImages',
+			title: 'Hero images (4 album covers)',
+			type: 'array',
+			of: [
+				defineArrayMember({
+					type: 'image',
+					options: { hotspot: false }
+				})
+			],
+			validation: (rule) => rule.max(4),
+			readOnly: true
+		})
+	],
+	preview: {
+		select: { title: 'heading' },
+		prepare({ title }: { title?: string }) {
+			return { title: title ?? 'New Music Hero' };
+		}
+	}
+});

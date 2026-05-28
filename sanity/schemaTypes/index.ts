@@ -2,13 +2,18 @@ import { defineType, type SchemaTypeDefinition } from 'sanity';
 
 import { pageType } from './documents/page';
 import { personType } from './documents/person';
+import { newMusicTuesday } from './documents/newMusicTuesday';
 import { scaffoldPortableTextDocument } from './documents/webContent';
+import { musicRelease } from './documents/musicRelease';
 import {
 	billboardType,
 	listScrollerType,
 	peopleRefsType,
-	richTextType
+	richTextType,
+	newMusicHeroBlock,
+	albumReviewBlock
 } from './objects/arrayBlockPrimitives';
+import { albumReviewBlock } from './objects/albumReviewBlock';
 import {
 	bodyTextType,
 	headingType,
@@ -17,6 +22,7 @@ import {
 	listType,
 	subheadingType
 } from './objects/bodyBlocks';
+import { newMusicHeroBlock } from './objects/newMusicHeroBlock';
 
 /**
  * Single registry of all schema types loaded by the Studio configuration.
@@ -27,6 +33,8 @@ import {
 export const schemaTypes: SchemaTypeDefinition[] = [
 	pageType,
 	personType,
+	musicRelease,
+	newMusicTuesday,
 	defineType({
 		name: 'blog',
 		title: 'Blog',
@@ -41,5 +49,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
 	billboardType,
 	listScrollerType,
 	peopleRefsType,
-	richTextType
+	richTextType,
+	newMusicHeroBlock,
+	albumReviewBlock
 ];

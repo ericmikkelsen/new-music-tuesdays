@@ -1,0 +1,108 @@
+---
+import '../../styles/global.css';
+import HTML from '../../layouts/html.astro';
+import {
+	getFeaturedReleases,
+	getMusicReleases
+} from '../../lib/content/musicCollection';
+
+export const prerender = true;
+
+const [featuredReleases, releases] = await Promise.all([
+	getFeaturedReleases(),
+	getMusicReleases()
+]);
+---
+
+<HTML title="Music" description="New music feed">
+	<div class="min-h-screen bg-[#090b12] px-6 py-12 text-white">
+		<div class="mx-auto max-w-7xl space-y-12">
+			<header class="space-y-2">
+				<p class="text-sm tracking-[0.18em] text-emerald-300 uppercase">
+					Music Feed
+				</p>
+				<h1 class="text-4xl font-bold">New releases</h1>
+			</header>
+
+			<section class="space-y-4">
+				<h2 class="text-2xl font-semibold">Editor&apos;s picks</h2>
+				{
+					featuredReleases.length ? (
+						<ul class="grid gap-4 md:grid-cols-2">
+							{featuredReleases.map((release) => (
+								<li>
+									<a
+										href={`/music/${release.slug}/`}
+										class="group block overflow-hidden rounded-xl border border-stone-700"
+									>
+										<div
+											class="relative p-6"
+											style={`background-image: linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.75)), url('${release.backgroundImageUrl || release.coverArt || ''}'); background-size: cover; background-position: center;`}
+										>
+											<h3 class="text-2xl font-semibold group-hover:text-emerald-300">
+												{release.title}
+											</h3>
+											<p class="text-stone-200">
+												{release.artistName}
+											</p>
+											{release.editorialNote ? (
+												<p class="mt-3 text-sm text-stone-100">
+													{release.editorialNote}
+												</p>
+											) : null}
+											{release.genres.length ? (
+												<div class="mt-4 flex flex-wrap gap-2">
+													{release.genres.map(
+														(genre) => (
+															<span class="rounded-full border border-stone-300 px-2 py-1 text-xs">
+																{genre}
+															</span>
+														)
+													)}
+												</div>
+											) : null}
+										</div>
+									</a>
+								</li>
+							))}
+						</ul>
+					) : (
+						<p class="text-stone-300">No featured releases yet.</p>
+					)
+				}
+			</section>
+
+			<section class="space-y-4">
+				<h2 class="text-2xl font-semibold">All releases</h2>
+				{
+					releases.length ? (
+						<ul class="grid grid-cols-2 gap-4 md:grid-cols-4">
+							{releases.map((release) => (
+								<li>
+									<a
+										href={`/music/${release.slug}/`}
+										class="block space-y-2"
+									>
+										<img
+											src={release.coverArt}
+											alt={`${release.title} cover`}
+											class="aspect-square w-full rounded-lg object-cover"
+										/>
+										<p class="font-semibold">
+											{release.title}
+										</p>
+										<p class="text-sm text-stone-400">
+											{release.artistName}
+										</p>
+									</a>
+								</li>
+							))}
+						</ul>
+					) : (
+						<p class="text-stone-300">No releases available yet.</p>
+					)
+				}
+			</section>
+		</div>
+	</div>
+</HTML>

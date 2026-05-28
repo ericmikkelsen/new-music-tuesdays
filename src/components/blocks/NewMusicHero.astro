@@ -1,0 +1,101 @@
+---
+import sharp from 'sharp';
+import type {
+	ArrayPageBuilderBlockByType,
+	BlockSettings
+} from '../../lib/content/pageBuilderTypes';
+import BlockWrapper from '../atoms/BlockWrapper.astro';
+import Heading from '../atoms/Heading.astro';
+
+interface Props
+	extends
+		Omit<ArrayPageBuilderBlockByType<'newMusicHeroBlock'>, '_type'>,
+		BlockSettings {}
+
+const {
+	heading,
+	description,
+	heroImages = [],
+	as,
+	hLevel
+} = Astro.props as Props;
+
+const compositeHeroGrid = async (urls: string[]) => {
+	if (urls.length !== 4) {
+		return undefined;
+	}
+
+	try {
+		const imageBuffers = await Promise.all(
+			urls.map(async (url) =>
+				Buffer.from(await (await fetch(url)).arrayBuffer())
+			)
+		);
+
+		const cellSize = 600;
+		const outputSize = cellSize * 2;
+		const base = sharp({
+			create: {
+				width: outputSize,
+				height: outputSize,
+				channels: 3,
+				background: '#111111'
+			}
+		});
+
+		const composite = await Promise.all(
+			imageBuffers.map(async (buffer, index) => ({
+				input: await sharp(buffer)
+					.resize(cellSize, cellSize, { fit: 'cover' })
+					.jpeg({ quality: 85 })
+					.toBuffer(),
+				left: (index % 2) * cellSize,
+				top: Math.floor(index / 2) * cellSize
+			}))
+		);
+
+		const output = await base
+			.composite(composite)
+			.jpeg({ quality: 85 })
+			.toBuffer();
+		return `data:image/jpeg;base64,${output.toString('base64')}`;
+	} catch {
+		return undefined;
+	}
+};
+
+const heroImageUrls = heroImages
+	.map((image) => image.url)
+	.filter((url): url is string => Boolean(url));
+const heroGridUrl = await compositeHeroGrid(heroImageUrls.slice(0, 4));
+---
+
+<BlockWrapper as={as} class="mx-auto max-w-6xl space-y-6 px-6 py-12 text-white">
+	{
+		heroGridUrl ? (
+			<img
+				src={heroGridUrl}
+				alt={heading}
+				class="h-auto w-full rounded-xl border border-stone-700 object-cover"
+			/>
+		) : (
+			<div class="grid grid-cols-2 gap-2">
+				{heroImageUrls.map((url, index) => (
+					<img
+						src={url}
+						alt={`${heading} album cover ${index + 1}`}
+						class="aspect-square w-full rounded-md object-cover"
+					/>
+				))}
+			</div>
+		)
+	}
+	<Heading hLevel={hLevel} class="text-4xl font-bold md:text-5xl"
+		>{heading}</Heading
+	>
+	{
+		description ? (
+			<p class="max-w-3xl text-lg text-stone-300">{description}</p>
+		) : null
+	}
+</BlockWrapper>

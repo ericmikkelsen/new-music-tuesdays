@@ -3,7 +3,9 @@ import type {
 	ArrayPageBuilderBlock,
 	BlockSettings
 } from '../../lib/content/pageBuilderTypes';
+import AlbumReview from './AlbumReview.astro';
 import Billboard from './Billboard.astro';
+import NewMusicHero from './NewMusicHero.astro';
 import ListScroller from './listScroller.astro';
 import PeopleRefs from './peopleRefs.astro';
 import RichText from './richText.astro';
@@ -31,5 +33,9 @@ const blockSettings: BlockSettings = {
 		<PeopleRefs {...data} {...blockSettings} />
 	) : data._type === 'richText' ? (
 		<RichText {...data} {...blockSettings} />
+	) : data._type === 'newMusicHeroBlock' ? (
+		<NewMusicHero {...data} {...blockSettings} />
+	) : data._type === 'albumReviewBlock' ? (
+		<AlbumReview {...data} {...blockSettings} />
 	) : null
 }

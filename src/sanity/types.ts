@@ -35,6 +35,64 @@ export type MetaImage = {
 	_type: 'image';
 };
 
+export type MusicReleaseReference = {
+	_ref: string;
+	_type: 'reference';
+	_weak?: boolean;
+	[internalGroqTypeReferenceTo]?: 'musicRelease';
+};
+
+export type AlbumReviewBlock = {
+	_type: 'albumReviewBlock';
+	heading?: string;
+	subheading?: string;
+	trackList?: Array<string>;
+	featuredTrack?: string;
+	featuredTrackUrl?: string;
+	spotifyUrl?: string;
+	genres?: Array<string>;
+	wikidataSummary?: string;
+	musicRelease?: MusicReleaseReference;
+	albumArt?: {
+		asset?: SanityImageAssetReference;
+		media?: unknown;
+		hotspot?: SanityImageHotspot;
+		crop?: SanityImageCrop;
+		_type: 'image';
+	};
+	backgroundImage?: {
+		asset?: SanityImageAssetReference;
+		media?: unknown;
+		hotspot?: SanityImageHotspot;
+		crop?: SanityImageCrop;
+		instruction?: string;
+		_type: 'image';
+	};
+	titleCard?: {
+		asset?: SanityImageAssetReference;
+		media?: unknown;
+		hotspot?: SanityImageHotspot;
+		crop?: SanityImageCrop;
+		instruction?: string;
+		_type: 'image';
+	};
+	body?: string;
+};
+
+export type NewMusicHeroBlock = {
+	_type: 'newMusicHeroBlock';
+	heading?: string;
+	description?: string;
+	heroImages?: Array<{
+		asset?: SanityImageAssetReference;
+		media?: unknown;
+		hotspot?: SanityImageHotspot;
+		crop?: SanityImageCrop;
+		_type: 'image';
+		_key: string;
+	}>;
+};
+
 export type RichText = {
 	_type: 'richText';
 	richText: Array<{
@@ -180,6 +238,79 @@ export type Blog = {
 	}>;
 };
 
+export type NewMusicTuesday = {
+	_id: string;
+	_type: 'newMusicTuesday';
+	_createdAt: string;
+	_updatedAt: string;
+	_rev: string;
+	title?: string;
+	slug?: Slug;
+	publishedAt?: string;
+	blocks?: Array<
+		| ({
+				_key: string;
+		  } & NewMusicHeroBlock)
+		| ({
+				_key: string;
+		  } & AlbumReviewBlock)
+	>;
+};
+
+export type Slug = {
+	_type: 'slug';
+	current: string;
+	source?: string;
+};
+
+export type MusicRelease = {
+	_id: string;
+	_type: 'musicRelease';
+	_createdAt: string;
+	_updatedAt: string;
+	_rev: string;
+	title?: string;
+	slug?: Slug;
+	artistName?: string;
+	artistId?: string;
+	albumId?: string;
+	releaseDate?: string;
+	coverArt?: string;
+	genres?: Array<string>;
+	popularityScore?: number;
+	spotifyUrl?: string;
+	label?: string;
+	trackCount?: number;
+	featuredTrack?: string;
+	featuredTrackUrl?: string;
+	tracks?: Array<string>;
+	similarArtists?: Array<{
+		name?: string;
+		spotifyId?: string;
+		imageUrl?: string;
+		_key: string;
+	}>;
+	backgroundImage?: {
+		asset?: SanityImageAssetReference;
+		media?: unknown;
+		hotspot?: SanityImageHotspot;
+		crop?: SanityImageCrop;
+		instruction?: string;
+		_type: 'image';
+	};
+	titleCard?: {
+		asset?: SanityImageAssetReference;
+		media?: unknown;
+		hotspot?: SanityImageHotspot;
+		crop?: SanityImageCrop;
+		instruction?: string;
+		_type: 'image';
+	};
+	featuredPick?: boolean;
+	editorialNote?: string;
+	publishedAt?: string;
+};
+
 export type Person = {
 	_id: string;
 	_type: 'person';
@@ -242,10 +373,141 @@ export type Page = {
 	>;
 };
 
-export type Slug = {
-	_type: 'slug';
-	current: string;
-	source?: string;
+export type SanityAssistInstructionTask = {
+	_type: 'sanity.assist.instructionTask';
+	path?: string;
+	instructionKey?: string;
+	started?: string;
+	updated?: string;
+	info?: string;
+};
+
+export type SanityAssistTaskStatus = {
+	_type: 'sanity.assist.task.status';
+	tasks?: Array<
+		{
+			_key: string;
+		} & SanityAssistInstructionTask
+	>;
+};
+
+export type SanityAssistSchemaTypeAnnotations = {
+	_type: 'sanity.assist.schemaType.annotations';
+	title?: string;
+	fields?: Array<
+		{
+			_key: string;
+		} & SanityAssistSchemaTypeField
+	>;
+};
+
+export type SanityAssistOutputType = {
+	_type: 'sanity.assist.output.type';
+	type?: string;
+};
+
+export type SanityAssistOutputField = {
+	_type: 'sanity.assist.output.field';
+	path?: string;
+};
+
+export type AssistInstructionContextReference = {
+	_ref: string;
+	_type: 'reference';
+	_weak?: boolean;
+	[internalGroqTypeReferenceTo]?: 'assist.instruction.context';
+};
+
+export type SanityAssistInstructionContext = {
+	_type: 'sanity.assist.instruction.context';
+	reference: AssistInstructionContextReference;
+};
+
+export type AssistInstructionContext = {
+	_id: string;
+	_type: 'assist.instruction.context';
+	_createdAt: string;
+	_updatedAt: string;
+	_rev: string;
+	title?: string;
+	context?: Array<{
+		children?: Array<{
+			marks?: Array<string>;
+			text?: string;
+			_type: 'span';
+			_key: string;
+		}>;
+		style?: 'normal';
+		listItem?: never;
+		markDefs?: null;
+		level?: number;
+		_type: 'block';
+		_key: string;
+	}>;
+};
+
+export type SanityAssistInstructionUserInput = {
+	_type: 'sanity.assist.instruction.userInput';
+	message: string;
+	description?: string;
+};
+
+export type SanityAssistInstructionPrompt = Array<{
+	children?: Array<
+		| {
+				marks?: Array<string>;
+				text?: string;
+				_type: 'span';
+				_key: string;
+		  }
+		| ({
+				_key: string;
+		  } & SanityAssistInstructionFieldRef)
+		| ({
+				_key: string;
+		  } & SanityAssistInstructionContext)
+		| ({
+				_key: string;
+		  } & SanityAssistInstructionUserInput)
+	>;
+	style?: 'normal';
+	listItem?: never;
+	markDefs?: null;
+	level?: number;
+	_type: 'block';
+	_key: string;
+}>;
+
+export type SanityAssistInstructionFieldRef = {
+	_type: 'sanity.assist.instruction.fieldRef';
+	path?: string;
+};
+
+export type SanityAssistInstruction = {
+	_type: 'sanity.assist.instruction';
+	prompt?: SanityAssistInstructionPrompt;
+	icon?: string;
+	title?: string;
+	userId?: string;
+	createdById?: string;
+	output?: Array<
+		| ({
+				_key: string;
+		  } & SanityAssistOutputField)
+		| ({
+				_key: string;
+		  } & SanityAssistOutputType)
+	>;
+};
+
+export type SanityAssistSchemaTypeField = {
+	_type: 'sanity.assist.schemaType.field';
+	path?: string;
+	instructions?: Array<
+		{
+			_key: string;
+		} & SanityAssistInstruction
+	>;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -349,6 +611,9 @@ export type AllSanitySchemaTypes =
 	| BillboardLink
 	| SanityImageAssetReference
 	| MetaImage
+	| MusicReleaseReference
+	| AlbumReviewBlock
+	| NewMusicHeroBlock
 	| RichText
 	| PersonReference
 	| PeopleRefs
@@ -363,9 +628,24 @@ export type AllSanitySchemaTypes =
 	| Subheading
 	| Heading
 	| Blog
+	| NewMusicTuesday
+	| Slug
+	| MusicRelease
 	| Person
 	| Page
-	| Slug
+	| SanityAssistInstructionTask
+	| SanityAssistTaskStatus
+	| SanityAssistSchemaTypeAnnotations
+	| SanityAssistOutputType
+	| SanityAssistOutputField
+	| AssistInstructionContextReference
+	| SanityAssistInstructionContext
+	| AssistInstructionContext
+	| SanityAssistInstructionUserInput
+	| SanityAssistInstructionPrompt
+	| SanityAssistInstructionFieldRef
+	| SanityAssistInstruction
+	| SanityAssistSchemaTypeField
 	| SanityImagePaletteSwatch
 	| SanityImagePalette
 	| SanityImageDimensions

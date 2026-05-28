@@ -1,5 +1,9 @@
 import type ImageType from '../../types/image';
 import type { Page as SanityPage } from '../../sanity/types';
+import type {
+	AlbumReviewBlock,
+	NewMusicHeroBlock
+} from './newMusicTuesdayCollection';
 
 /**
  * Narrow portable text block representation used by the scaffolded rich-text block.
@@ -41,7 +45,9 @@ export type ArrayPageBuilderBlock =
 			'richText'
 	  > & {
 			richText?: PortableTextBlock[];
-	  });
+	  })
+	| NewMusicHeroBlock
+	| AlbumReviewBlock;
 
 /**
  * Utility type to derive a specific block shape by `_type` key.

@@ -1,3 +1,4 @@
+import { assist } from '@sanity/assist';
 import { defineConfig } from 'sanity';
 import {
 	defineLocations,
@@ -123,6 +124,7 @@ export default defineConfig({
 	dataset,
 	plugins: [
 		structureTool(),
+		assist(),
 		presentationTool({
 			resolve: presentationResolve,
 			previewUrl: {
