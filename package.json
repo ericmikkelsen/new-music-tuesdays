@@ -18,7 +18,8 @@
 		"start": "npm run dev",
 		"test": "node --import tsx --test tests/**/*.test.ts",
 		"prepare": "husky",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"seed:music": "node --env-file=.env --import tsx scripts/seed-music.ts"
 	},
 	"lint-staged": {
 		"*.{js,jsx,ts,tsx,mjs,cjs,vue,svelte,astro,css,scss,sass,less,html,svg,json,yaml,yml,md}": "prettier --write"
@@ -33,6 +34,7 @@
 		"@semantic-release/npm": "^13.1.5",
 		"@semantic-release/release-notes-generator": "^14.1.0",
 		"@tailwindcss/vite": "^4.2.4",
+		"@types/sharp": "^0.31.1",
 		"conventional-changelog-conventionalcommits": "^9.1.0",
 		"husky": "^9.0.0",
 		"lint-staged": "^16.4.0",
@@ -47,6 +49,7 @@
 	"dependencies": {
 		"@astrojs/node": "^10.0.6",
 		"@astrojs/react": "^5.0.4",
+		"@sanity/assist": "^6.0.7",
 		"@sanity/astro": "^3.3.1",
 		"@sanity/client": "^7.22.0",
 		"@sanity/visual-editing": "5.3.4",
@@ -60,6 +63,8 @@
 		"react-dom": "^19.2.5",
 		"react-is": "^19.2.5",
 		"sanity": "^5.23.0",
+		"sanity-plugin-iframe-pane": "^5.0.13",
+		"sharp": "^0.34.5",
 		"styled-components": "^6.4.1"
 	}
 }

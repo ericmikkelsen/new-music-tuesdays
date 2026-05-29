@@ -1,0 +1,63 @@
+---
+import type ImageType from '../../types/image';
+import type { BlockSettings } from '../../lib/content/pageBuilderTypes';
+import BlockWrapper from '../atoms/BlockWrapper.astro';
+import Heading from '../atoms/Heading.astro';
+import Image from '../atoms/Image.astro';
+
+interface Props extends BlockSettings {
+	heading?: string;
+	body?: string;
+	link?: { text?: string; url?: string };
+	image?: ImageType;
+}
+
+const {
+	heading = '',
+	body = '',
+	as,
+	hLevel,
+	priority,
+	link = { text: '', url: '' },
+	image
+} = Astro.props as Props;
+---
+
+<BlockWrapper as={as} class="relative overflow-hidden rounded-3xl bg-zinc-100">
+	<div
+		class="grid gap-6 p-8 md:grid-cols-[1fr_1.2fr] md:items-center md:p-12"
+	>
+		<div class="space-y-4">
+			{
+				heading.length ? (
+					<Heading
+						hLevel={hLevel}
+						class="text-3xl font-bold md:text-5xl"
+					>
+						{heading}
+					</Heading>
+				) : null
+			}
+			{body.length ? <p class="text-lg text-zinc-700">{body}</p> : null}
+			{
+				link?.text && link?.url ? (
+					<a
+						class="inline-block rounded-xl bg-black px-5 py-3 text-white"
+						href={link.url}
+					>
+						{link.text}
+					</a>
+				) : null
+			}
+		</div>
+		{
+			image?.src ? (
+				<Image
+					{...(image as Required<ImageType>)}
+					priority={priority}
+					class="h-full w-full rounded-2xl object-cover"
+				/>
+			) : null
+		}
+	</div>
+</BlockWrapper>

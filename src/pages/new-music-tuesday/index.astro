@@ -1,0 +1,116 @@
+---
+import '../../styles/global.css';
+import HTML from '../../layouts/html.astro';
+import Image from '../../components/atoms/Image.astro';
+import { getNewMusicTuesdayIssues } from '../../lib/content/newMusicTuesdayCollection';
+
+export const prerender = true;
+
+const issues = await getNewMusicTuesdayIssues({ preview: false });
+
+const formatIssueDate = (value?: string): string => {
+	if (!value) {
+		return '';
+	}
+
+	const parsed = new Date(value);
+	if (Number.isNaN(parsed.getTime())) {
+		return value;
+	}
+
+	return new Intl.DateTimeFormat('en-US', {
+		month: 'long',
+		day: 'numeric',
+		year: 'numeric',
+		timeZone: 'UTC'
+	}).format(parsed);
+};
+
+const resolveCardTint = (hex?: string): string | undefined => {
+	if (!hex) {
+		return undefined;
+	}
+
+	const normalized = hex.trim();
+	return /^#[0-9a-fA-F]{6}$/u.test(normalized)
+		? `${normalized}22`
+		: undefined;
+};
+---
+
+<HTML
+	title="New Music Tuesday"
+	description="Archive of New Music Tuesday issues"
+>
+	<div class="mx-auto max-w-6xl space-y-6 px-6 py-14">
+		<h1 class="text-4xl font-bold">New Music Tuesday</h1>
+		{
+			issues.length ? (
+				<ul class="grid gap-4 md:grid-cols-2">
+					{issues.map((issue, index) => {
+						const firstBlock = issue.blocks[0];
+						const publishedHref = `/new-music-tuesday/${issue.slug}/`;
+						const cardTitle =
+							firstBlock?._type === 'newMusicHeroBlock' &&
+							firstBlock.heading
+								? firstBlock.heading
+								: issue.title;
+						const heroImageUrl =
+							firstBlock?._type === 'newMusicHeroBlock' &&
+							firstBlock.heroImages.length >= 4
+								? `/new-music-tuesday/hero-grid/${issue.slug}.jpg`
+								: undefined;
+						const formattedDate = formatIssueDate(
+							issue.publishedAt
+						);
+						const previewDescription =
+							firstBlock?._type === 'newMusicHeroBlock'
+								? firstBlock.description
+								: '';
+						const cardTint =
+							firstBlock?._type === 'newMusicHeroBlock'
+								? resolveCardTint(
+										firstBlock.heroImages[0]
+											?.dominantBackground
+									)
+								: undefined;
+						return (
+							<li
+								class="rounded-xl border border-stone-200 p-5"
+								style={
+									cardTint
+										? `background-color: ${cardTint};`
+										: undefined
+								}
+							>
+								{heroImageUrl ? (
+									<Image
+										src={heroImageUrl}
+										alt={cardTitle}
+										width={1200}
+										height={1200}
+										priority={index === 0}
+										class="mb-4 w-full rounded-lg object-cover"
+									/>
+								) : null}
+								<a
+									href={publishedHref}
+									class="text-2xl font-semibold text-emerald-700 underline"
+								>
+									{cardTitle}
+								</a>
+								{previewDescription ? (
+									<p class="mt-3 text-stone-700">
+										{previewDescription}
+									</p>
+								) : null}
+							</li>
+						);
+					})}
+				</ul>
+			) : (
+				<p>No issues yet.</p>
+			)
+		}
+	</div>
+</HTML>

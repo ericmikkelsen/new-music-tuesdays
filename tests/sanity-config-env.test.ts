@@ -1,18 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { resolveStudioEnvValue } from '../sanity/resolveStudioEnv';
 
 /**
  * Imports the resolver lazily so each test can control env setup beforehand.
- */
-const importResolver = async () => {
-	const module = await import('../sanity.config');
-	return module.resolveStudioEnvValue;
-};
-
-/**
- * Wraps a test body with temporary Studio env values and restores prior state.
- *
- * @param {() => Promise<void>} callback - Async test body.
  */
 const withStudioEnv = async (callback: () => Promise<void>) => {
 	const previousProjectId = process.env.PUBLIC_SANITY_PROJECT_ID;
@@ -40,7 +31,6 @@ const withStudioEnv = async (callback: () => Promise<void>) => {
 
 test('resolveStudioEnvValue prefers import.meta env values', async () => {
 	await withStudioEnv(async () => {
-		const resolveStudioEnvValue = await importResolver();
 		const value = resolveStudioEnvValue('PUBLIC_SANITY_PROJECT_ID', {
 			defineValues: {
 				PUBLIC_SANITY_PROJECT_ID: undefined,
@@ -60,7 +50,6 @@ test('resolveStudioEnvValue prefers import.meta env values', async () => {
 
 test('resolveStudioEnvValue falls back to process env when import.meta env is missing', async () => {
 	await withStudioEnv(async () => {
-		const resolveStudioEnvValue = await importResolver();
 		const value = resolveStudioEnvValue('PUBLIC_SANITY_DATASET', {
 			defineValues: {
 				PUBLIC_SANITY_PROJECT_ID: undefined,
@@ -76,9 +65,42 @@ test('resolveStudioEnvValue falls back to process env when import.meta env is mi
 	});
 });
 
+test('resolveStudioEnvValue supports hosted studio import.meta alias keys', async () => {
+	await withStudioEnv(async () => {
+		const value = resolveStudioEnvValue('PUBLIC_SANITY_PROJECT_ID', {
+			defineValues: {
+				PUBLIC_SANITY_PROJECT_ID: undefined,
+				PUBLIC_SANITY_DATASET: undefined
+			},
+			importMetaEnv: {
+				SANITY_STUDIO_PROJECT_ID: 'hosted-meta-project'
+			},
+			processEnv: {}
+		});
+
+		assert.equal(value, 'hosted-meta-project');
+	});
+});
+
+test('resolveStudioEnvValue supports hosted studio process env alias keys', async () => {
+	await withStudioEnv(async () => {
+		const value = resolveStudioEnvValue('PUBLIC_SANITY_DATASET', {
+			defineValues: {
+				PUBLIC_SANITY_PROJECT_ID: undefined,
+				PUBLIC_SANITY_DATASET: undefined
+			},
+			importMetaEnv: {},
+			processEnv: {
+				SANITY_STUDIO_DATASET: 'hosted-process-dataset'
+			}
+		});
+
+		assert.equal(value, 'hosted-process-dataset');
+	});
+});
+
 test('resolveStudioEnvValue prefers define-injected studio values', async () => {
 	await withStudioEnv(async () => {
-		const resolveStudioEnvValue = await importResolver();
 		const value = resolveStudioEnvValue('PUBLIC_SANITY_PROJECT_ID', {
 			defineValues: {
 				PUBLIC_SANITY_PROJECT_ID: 'defined-project',
@@ -98,7 +120,6 @@ test('resolveStudioEnvValue prefers define-injected studio values', async () => 
 
 test('resolveStudioEnvValue throws when required env value is missing', async () => {
 	await withStudioEnv(async () => {
-		const resolveStudioEnvValue = await importResolver();
 		assert.throws(
 			() =>
 				resolveStudioEnvValue('PUBLIC_SANITY_PROJECT_ID', {
@@ -109,7 +130,7 @@ test('resolveStudioEnvValue throws when required env value is missing', async ()
 					importMetaEnv: {},
 					processEnv: {}
 				}),
-			/missing required environment variable public_sanity_project_id/i
+			/checked aliases: public_sanity_project_id, sanity_studio_project_id/i
 		);
 	});
 });

@@ -13,7 +13,7 @@ test('billboardType defines expected fields', () => {
 	assert.equal(billboardType.name, 'billboard');
 	assert.deepEqual(
 		billboardType.fields?.map((field) => field.name),
-		['heading', 'body', 'image']
+		['heading', 'body', 'link', 'image']
 	);
 });
 

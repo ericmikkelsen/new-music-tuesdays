@@ -104,12 +104,14 @@ export async function getAstroBlogPosts(): Promise<AstroBlogPost[]> {
  * @returns The mapped post, or `undefined` when not found or on error.
  */
 export async function getAstroBlogPostBySlugDirect(
-	slug: string
+	slug: string,
+	options: { preview?: boolean } = {}
 ): Promise<AstroBlogPost | undefined> {
 	try {
 		const result = await loadQuery<SanityBlogQueryResult | null>(
 			BLOG_BY_SLUG_QUERY,
-			{ slug }
+			{ slug },
+			{ preview: options.preview }
 		);
 		if (!result) return undefined;
 		return mapSanityBlogToAstroPost(result) ?? undefined;

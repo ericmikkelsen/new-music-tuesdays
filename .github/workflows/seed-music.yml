@@ -1,0 +1,22 @@
+name: Seed music releases
+on:
+    schedule:
+        - cron: '0 9 * * 2'
+    workflow_dispatch:
+
+jobs:
+    seed:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '20'
+            - run: npm ci
+            - run: npm run seed:music
+              env:
+                  SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+                  SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+                  SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+                  SANITY_DATASET: production
+                  SANITY_API_TOKEN: ${{ secrets.SANITY_API_TOKEN }}

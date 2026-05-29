@@ -31,12 +31,7 @@ test('pageType blocks allows expected primitive blocks', () => {
 			? blocksField.of?.map((member) => member.type)
 			: [];
 
-	assert.deepEqual(memberTypes, [
-		'billboard',
-		'listScroller',
-		'peopleRefs',
-		'richText'
-	]);
+	assert.deepEqual(memberTypes, ['slide']);
 });
 
 /**

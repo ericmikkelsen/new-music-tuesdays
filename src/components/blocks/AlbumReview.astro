@@ -1,0 +1,96 @@
+---
+import type {
+	ArrayPageBuilderBlockByType,
+	BlockSettings
+} from '../../lib/content/pageBuilderTypes';
+import BlockWrapper from '../atoms/BlockWrapper.astro';
+import Heading from '../atoms/Heading.astro';
+import Image from '../atoms/Image.astro';
+
+interface Props
+	extends
+		Omit<ArrayPageBuilderBlockByType<'albumReviewBlock'>, '_type'>,
+		BlockSettings {}
+
+const {
+	heading,
+	subheading,
+	body,
+	trackList = [],
+	albumArtUrl,
+	featuredTrack,
+	featuredTrackUrl,
+	spotifyUrl,
+	genres = [],
+	priority,
+	as,
+	hLevel
+} = Astro.props as Props;
+---
+
+<BlockWrapper
+	as={as}
+	class="relative isolate mx-auto max-w-3xl overflow-hidden rounded-xl border border-stone-700"
+>
+	<div class="space-y-4 p-6 text-white">
+		<Heading hLevel={hLevel} class="text-3xl font-semibold"
+			>{heading}</Heading
+		>
+		<p class="text-sm tracking-[0.14em] text-stone-300 uppercase">
+			{subheading}
+		</p>
+		{
+			albumArtUrl ? (
+				<Image
+					src={albumArtUrl}
+					alt={heading}
+					width={600}
+					height={600}
+					priority={priority}
+					class="w-full rounded-lg object-cover"
+				/>
+			) : null
+		}
+		{body ? <p class="max-w-3xl text-stone-100">{body}</p> : null}
+		{
+			featuredTrack && featuredTrackUrl ? (
+				<a
+					class="font-semibold text-emerald-300 underline"
+					href={featuredTrackUrl}
+				>
+					Featured track: {featuredTrack}
+				</a>
+			) : null
+		}
+		{
+			trackList.length ? (
+				<ol class="list-decimal space-y-1 pl-5 text-stone-200">
+					{trackList.map((track) => (
+						<li>{track}</li>
+					))}
+				</ol>
+			) : null
+		}
+		{
+			genres.length ? (
+				<ul class="flex flex-wrap gap-2">
+					{genres.map((genre) => (
+						<li class="rounded-full border border-stone-300 px-3 py-1 text-xs">
+							{genre}
+						</li>
+					))}
+				</ul>
+			) : null
+		}
+		{
+			spotifyUrl ? (
+				<a
+					href={spotifyUrl}
+					class="inline-block rounded-full bg-pink-500 px-4 py-2 text-sm font-semibold text-black"
+				>
+					Listen on Listnr
+				</a>
+			) : null
+		}
+	</div>
+</BlockWrapper>

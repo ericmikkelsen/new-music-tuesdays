@@ -15,6 +15,8 @@ const apiVersion = import.meta.env.PUBLIC_SANITY_API_VERSION || '2026-01-01';
  * encoding enabled.
  */
 export const GET: APIRoute = async ({ request, cookies, redirect }) => {
+	const requestUrl = new URL(request.url);
+
 	const token = import.meta.env.SANITY_API_READ_TOKEN;
 
 	if (!token) {
@@ -44,6 +46,25 @@ export const GET: APIRoute = async ({ request, cookies, redirect }) => {
 		return new Response('Invalid secret', { status: 401 });
 	}
 
+	const previewPathParam = requestUrl.searchParams.get(
+		'sanity-preview-pathname'
+	);
+	const normalizedPreviewPath =
+		typeof previewPathParam === 'string' && previewPathParam.trim()
+			? previewPathParam.startsWith('/')
+				? previewPathParam
+				: `/${previewPathParam}`
+			: '/';
+
+	const resolvedRedirectUrl = new URL(redirectTo, request.url);
+	const resolvedRedirectPath = `${resolvedRedirectUrl.pathname}${resolvedRedirectUrl.search}`;
+	const isDraftModeEndpoint = /^\/api\/draft-mode\//u.test(
+		resolvedRedirectUrl.pathname
+	);
+	const finalRedirectPath = isDraftModeEndpoint
+		? normalizedPreviewPath
+		: resolvedRedirectPath;
+
 	const isSecure = new URL(request.url).protocol === 'https:';
 	cookies.set(perspectiveCookieName, studioPreviewPerspective ?? 'drafts', {
 		httpOnly: false,
@@ -52,5 +73,5 @@ export const GET: APIRoute = async ({ request, cookies, redirect }) => {
 		path: '/'
 	});
 
-	return redirect(redirectTo, 307);
+	return redirect(finalRedirectPath, 307);
 };

@@ -1,4 +1,4 @@
-import { defineField } from 'sanity';
+import { defineField } from './helpers';
 
 /**
  * Core web page fields shared across all web document types.

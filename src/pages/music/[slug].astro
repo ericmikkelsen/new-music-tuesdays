@@ -1,0 +1,134 @@
+---
+import '../../styles/global.css';
+import HTML from '../../layouts/html.astro';
+import { getMusicReleases } from '../../lib/content/musicCollection';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+	const releases = await getMusicReleases();
+	return releases.map((release) => ({
+		params: { slug: release.slug },
+		props: { release }
+	}));
+}
+
+const { release } = Astro.props;
+---
+
+<HTML
+	title={`${release.title} — ${release.artistName}`}
+	description={release.editorialNote || ''}
+>
+	<div class="min-h-screen bg-black text-white">
+		<section class="relative isolate overflow-hidden">
+			<div
+				class="mx-auto grid max-w-6xl gap-8 px-6 py-14 md:grid-cols-[320px_1fr]"
+			>
+				<img
+					src={release.coverArtUrl}
+					alt={`${release.title} cover art`}
+					class="w-full rounded-xl object-cover"
+				/>
+				<div class="space-y-4">
+					<h1 class="text-4xl font-bold">{release.title}</h1>
+					<p class="text-lg text-stone-200">{release.artistName}</p>
+					<p class="text-stone-300">
+						{release.releaseDate} • {release.label} • {
+							release.trackCount
+						} tracks
+					</p>
+					{
+						release.editorialNote ? (
+							<p>{release.editorialNote}</p>
+						) : null
+					}
+					{
+						release.genres.length ? (
+							<div class="flex flex-wrap gap-2">
+								{release.genres.map((genre) => (
+									<span class="rounded-full border border-stone-300 px-3 py-1 text-xs">
+										{genre}
+									</span>
+								))}
+							</div>
+						) : null
+					}
+					{
+						release.itunesUrl ? (
+							<a
+								href={release.itunesUrl}
+								class="inline-block rounded-full bg-emerald-500 px-4 py-2 font-semibold text-black"
+							>
+								Open in iTunes
+							</a>
+						) : null
+					}
+					{
+						release.wikidataSummary ? (
+							<p class="text-sm text-stone-400">
+								{release.wikidataSummary}
+							</p>
+						) : null
+					}
+				</div>
+			</div>
+		</section>
+
+		{
+			release.trackList.length ? (
+				<section class="mx-auto max-w-6xl space-y-4 px-6 pb-14">
+					<h2 class="text-2xl font-semibold">Track list</h2>
+					<ol class="list-decimal space-y-1 pl-6 text-stone-300">
+						{release.trackList.map((track) => (
+							<li>{track}</li>
+						))}
+					</ol>
+				</section>
+			) : null
+		}
+
+		{
+			release.personnel.length ? (
+				<section class="mx-auto max-w-6xl space-y-4 px-6 pb-14">
+					<h2 class="text-2xl font-semibold">Personnel</h2>
+					<ul class="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+						{release.personnel.map((person) => (
+							<li class="rounded-lg border border-stone-800 bg-stone-950 p-3">
+								{person}
+							</li>
+						))}
+					</ul>
+				</section>
+			) : null
+		}
+
+		{
+			release.producers.length ? (
+				<section class="mx-auto max-w-6xl space-y-4 px-6 pb-14">
+					<h2 class="text-2xl font-semibold">Producers</h2>
+					<ul class="flex flex-wrap gap-2 text-stone-300">
+						{release.producers.map((producer) => (
+							<li class="rounded-full border border-stone-700 px-3 py-1">
+								{producer}
+							</li>
+						))}
+					</ul>
+				</section>
+			) : null
+		}
+
+		{
+			release.awards.length ? (
+				<section class="mx-auto max-w-6xl space-y-4 px-6 pb-14">
+					<h2 class="text-2xl font-semibold">Awards</h2>
+					<ul class="list-disc space-y-1 pl-6 text-stone-300">
+						{release.awards.map((award) => (
+							<li>{award}</li>
+						))}
+					</ul>
+				</section>
+			) : null
+		}
+	</div>
+</HTML>

@@ -1,0 +1,117 @@
+---
+import type {
+	ArrayPageBuilderBlockByType,
+	BlockSettings
+} from '../../lib/content/pageBuilderTypes';
+import BlockWrapper from '../atoms/BlockWrapper.astro';
+import Heading from '../atoms/Heading.astro';
+import Image from '../atoms/Image.astro';
+
+interface Props
+	extends
+		Omit<ArrayPageBuilderBlockByType<'newMusicHeroBlock'>, '_type'>,
+		BlockSettings {
+	issueSlug?: string;
+}
+
+const {
+	heading,
+	subheading,
+	description,
+	heroImages = [],
+	issueSlug,
+	priority,
+	as,
+	hLevel
+} = Astro.props as Props;
+
+const formatFriendlyHeading = (value: string | undefined): string => {
+	const raw = (value ?? '').trim();
+	const match = raw.match(/^(New Music Tuesday)\s+(\d{4})-(\d{2})-(\d{2})$/);
+	if (!match) {
+		return raw;
+	}
+
+	const [, prefix, year, month, day] = match;
+	const parsed = new Date(`${year}-${month}-${day}T00:00:00Z`);
+	if (Number.isNaN(parsed.getTime())) {
+		return raw;
+	}
+
+	const dayNumber = Number(day);
+	const mod100 = dayNumber % 100;
+	let suffix = 'th';
+	if (mod100 < 11 || mod100 > 13) {
+		if (dayNumber % 10 === 1) suffix = 'st';
+		if (dayNumber % 10 === 2) suffix = 'nd';
+		if (dayNumber % 10 === 3) suffix = 'rd';
+	}
+
+	const monthName = new Intl.DateTimeFormat('en-US', {
+		month: 'long',
+		timeZone: 'UTC'
+	}).format(parsed);
+	return `${prefix} ${monthName} ${dayNumber}${suffix}`;
+};
+
+const resolvedHeading = formatFriendlyHeading(heading);
+const yearFromHeading = (heading ?? '').match(/\b(19|20)\d{2}\b/)?.[0] ?? '';
+const resolvedSubheading = subheading?.trim() || yearFromHeading;
+
+const heroImageUrls = heroImages
+	.map((image) => image.url)
+	.filter((url): url is string => Boolean(url));
+const heroGridSearch = new URLSearchParams();
+for (const url of heroImageUrls.slice(0, 4)) {
+	heroGridSearch.append('i', url);
+}
+const heroGridUrl =
+	heroImageUrls.length >= 4
+		? issueSlug
+			? `/new-music-tuesday/hero-grid/${issueSlug}.jpg`
+			: `/api/new-music-hero-grid.jpg?${heroGridSearch.toString()}`
+		: undefined;
+---
+
+<BlockWrapper as={as} class="mx-auto max-w-4xl space-y-6 py-12 text-white">
+	<Heading hLevel={hLevel} class="text-4xl font-bold md:text-5xl"
+		>{resolvedHeading}</Heading
+	>
+	{
+		resolvedSubheading ? (
+			<p class="text-sm font-semibold tracking-[0.2em] text-stone-300 uppercase">
+				{resolvedSubheading}
+			</p>
+		) : null
+	}
+	{
+		heroGridUrl ? (
+			<Image
+				src={heroGridUrl}
+				alt={resolvedHeading}
+				width={1200}
+				height={1200}
+				priority={priority}
+				class="h-auto w-full rounded-xl border border-stone-700 object-cover"
+			/>
+		) : (
+			<div class="grid grid-cols-2 gap-2">
+				{heroImageUrls.map((url, index) => (
+					<Image
+						src={url}
+						alt={`${resolvedHeading} album cover ${index + 1}`}
+						width={600}
+						height={600}
+						priority={priority}
+						class="aspect-square w-full rounded-md object-cover"
+					/>
+				))}
+			</div>
+		)
+	}
+	{
+		description ? (
+			<p class="max-w-3xl text-lg text-stone-300">{description}</p>
+		) : null
+	}
+</BlockWrapper>

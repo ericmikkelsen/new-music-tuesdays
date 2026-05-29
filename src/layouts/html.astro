@@ -12,12 +12,15 @@ const { title, description = '' } = Astro.props;
 // SanityVisualEditing must be mounted whenever visual editing is configured so it
 // can respond to the Studio's PresentationToolGrantsCheck postMessage handshake,
 // which fires before the draft-mode cookie is set.
+const isPreviewRoute = Astro.url.pathname.startsWith('/preview/');
 const visualEditingEnabled =
-	import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true' ||
-	import.meta.env.PUBLIC_SANITY_ENABLE_PREVIEW === 'true';
+	isPreviewRoute &&
+	(import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true' ||
+		import.meta.env.PUBLIC_SANITY_ENABLE_PREVIEW === 'true');
 
-// DisableDraftMode is only needed once the draft-mode cookie has been set.
-const draftMode = Astro.cookies.has(perspectiveCookieName);
+// Only preview routes need draft-mode cookie checks; skipping this on static
+// pages avoids request-header access warnings during prerender.
+const draftMode = isPreviewRoute && Astro.cookies.has(perspectiveCookieName);
 ---
 
 <!doctype html>

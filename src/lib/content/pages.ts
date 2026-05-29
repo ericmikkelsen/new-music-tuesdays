@@ -135,7 +135,8 @@ export async function getAstroPages(): Promise<AstroPage[]> {
  * @returns The mapped page, or `undefined` when not found or on error.
  */
 export async function getAstroPageBySlugDirect(
-	slug: string
+	slug: string,
+	options: { preview?: boolean } = {}
 ): Promise<AstroPage | undefined> {
 	const normalizedSlug = normalizePageSlug(slug);
 	if (!normalizedSlug) {
@@ -145,7 +146,8 @@ export async function getAstroPageBySlugDirect(
 	try {
 		const result = await loadQuery<SanityPageQueryResult | null>(
 			PAGE_BY_SLUG_QUERY,
-			{ slug: normalizedSlug }
+			{ slug: normalizedSlug },
+			{ preview: options.preview }
 		);
 		if (!result) return undefined;
 		return mapSanityPageToAstroPage(result) ?? undefined;

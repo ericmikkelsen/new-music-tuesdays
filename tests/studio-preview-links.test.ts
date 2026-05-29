@@ -90,6 +90,42 @@ test('resolveDocumentProductionUrl maps blog documents to blog routes', () => {
 	);
 });
 
+test('resolveDocumentProductionUrl maps music releases to music preview routes', () => {
+	assert.equal(
+		resolveDocumentProductionUrl(
+			{
+				_type: 'musicRelease',
+				slug: { current: 'blue-morpho-ed-o-brien' }
+			},
+			{
+				importMetaEnv: {
+					PUBLIC_SITE_URL: 'https://example.com'
+				},
+				processEnv: {}
+			}
+		),
+		'https://example.com/preview/music/blue-morpho-ed-o-brien'
+	);
+});
+
+test('resolveDocumentProductionUrl maps New Music Tuesday issues to issue preview routes', () => {
+	assert.equal(
+		resolveDocumentProductionUrl(
+			{
+				_type: 'newMusicTuesday',
+				slug: { current: 'new-music-tuesday-2026-05-28' }
+			},
+			{
+				importMetaEnv: {
+					PUBLIC_SITE_URL: 'https://example.com'
+				},
+				processEnv: {}
+			}
+		),
+		'https://example.com/preview/new-music-tuesday/new-music-tuesday-2026-05-28'
+	);
+});
+
 test('resolveDocumentProductionUrl returns undefined for unsupported document types', () => {
 	assert.equal(
 		resolveDocumentProductionUrl(

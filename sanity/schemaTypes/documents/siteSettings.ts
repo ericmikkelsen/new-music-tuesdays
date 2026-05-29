@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity';
+import { defineField, defineType } from '../helpers';
 import { LINKS_FIELD_ARGS } from '../objects/componentFields';
 export default defineType({
 	name: 'siteSettings',

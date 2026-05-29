@@ -1,0 +1,24 @@
+---
+import '../../styles/global.css';
+import HTML from '../../layouts/html.astro';
+import Blocks from '../../components/blocks/_blocks.astro';
+import { getNewMusicTuesdayIssues } from '../../lib/content/newMusicTuesdayCollection';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+	const issues = await getNewMusicTuesdayIssues({ preview: false });
+	return issues.map((issue) => ({
+		params: { slug: issue.slug },
+		props: { issue }
+	}));
+}
+
+const { issue } = Astro.props;
+---
+
+<HTML title={issue.title} description="New Music Tuesday issue">
+	<div class="min-h-screen space-y-8 bg-[#090b12] px-6 pb-12 text-white">
+		<Blocks blockData={issue.blocks} issueSlug={issue.slug} />
+	</div>
+</HTML>

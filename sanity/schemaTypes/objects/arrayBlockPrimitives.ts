@@ -1,4 +1,4 @@
-import { defineArrayMember, defineField, defineType } from 'sanity';
+import { defineArrayMember, defineField, defineType } from '../helpers';
 
 import {
 	BODY_FIELD_ARGS,
@@ -7,6 +7,32 @@ import {
 	LINK_FIELD_ARGS,
 	RICH_TEXT_FIELD_ARGS
 } from './componentFields';
+
+/**
+ * Slide block for page builders.
+ */
+export const slideType = defineType({
+	name: 'slide',
+	title: 'Slide',
+	type: 'object',
+	fields: [
+		defineField(HEADING_FIELD_ARGS),
+		defineField(BODY_FIELD_ARGS),
+		defineField(LINK_FIELD_ARGS),
+		defineField(IMAGE_FIELD_ARGS)
+	],
+	preview: {
+		select: {
+			title: 'heading'
+		},
+		prepare(selection) {
+			return {
+				title: selection.title || 'Untitled Slide',
+				subtitle: 'Slide'
+			};
+		}
+	}
+});
 
 /**
  * Hero-style block for array-driven pages.
