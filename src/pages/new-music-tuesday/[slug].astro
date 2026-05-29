@@ -2,34 +2,25 @@
 import '../../styles/global.css';
 import HTML from '../../layouts/html.astro';
 import Blocks from '../../components/blocks/_blocks.astro';
-import {
-	getNewMusicTuesdayBySlug,
-	getNewMusicTuesdayIssues
-} from '../../lib/content/newMusicTuesdayCollection';
+import { getNewMusicTuesdayIssues } from '../../lib/content/newMusicTuesdayCollection';
 
 export const prerender = true;
 
 export async function getStaticPaths() {
-	const issues = await getNewMusicTuesdayIssues();
+	const issues = await getNewMusicTuesdayIssues({ preview: false });
 	return issues.map((issue) => ({
-		params: { slug: issue.slug }
+		params: { slug: issue.slug },
+		props: { issue }
 	}));
 }
 
-const issue = await getNewMusicTuesdayBySlug(Astro.params.slug ?? '');
-if (!issue) {
-	throw Astro.redirect('/new-music-tuesday/');
-}
+const { issue } = Astro.props;
 ---
 
 <HTML title={issue.title} description="New Music Tuesday issue">
 	<div class="min-h-screen bg-[#090b12] text-white">
-		<header class="mx-auto max-w-6xl space-y-2 px-6 pt-12 pb-4">
-			<h1 class="text-4xl font-bold">{issue.title}</h1>
-			<p class="text-stone-300">{issue.publishedAt}</p>
-		</header>
 		<div class="mx-auto max-w-6xl space-y-8 px-6 pb-12">
-			<Blocks blockData={issue.blocks} />
+			<Blocks blockData={issue.blocks} issueSlug={issue.slug} />
 		</div>
 	</div>
 </HTML>

@@ -1,89 +1,98 @@
 ---
-import sharp from 'sharp';
 import type {
 	ArrayPageBuilderBlockByType,
 	BlockSettings
 } from '../../lib/content/pageBuilderTypes';
 import BlockWrapper from '../atoms/BlockWrapper.astro';
 import Heading from '../atoms/Heading.astro';
+import Image from '../atoms/Image.astro';
 
 interface Props
 	extends
 		Omit<ArrayPageBuilderBlockByType<'newMusicHeroBlock'>, '_type'>,
-		BlockSettings {}
+		BlockSettings {
+	issueSlug?: string;
+}
 
 const {
 	heading,
+	subheading,
 	description,
 	heroImages = [],
+	issueSlug,
+	priority,
 	as,
 	hLevel
 } = Astro.props as Props;
 
-const compositeHeroGrid = async (urls: string[]) => {
-	if (urls.length !== 4) {
-		return undefined;
+const formatFriendlyHeading = (value: string | undefined): string => {
+	const raw = (value ?? '').trim();
+	const match = raw.match(/^(New Music Tuesday)\s+(\d{4})-(\d{2})-(\d{2})$/);
+	if (!match) {
+		return raw;
 	}
 
-	try {
-		const imageBuffers = await Promise.all(
-			urls.map(async (url) =>
-				Buffer.from(await (await fetch(url)).arrayBuffer())
-			)
-		);
-
-		const cellSize = 600;
-		const outputSize = cellSize * 2;
-		const base = sharp({
-			create: {
-				width: outputSize,
-				height: outputSize,
-				channels: 3,
-				background: '#111111'
-			}
-		});
-
-		const composite = await Promise.all(
-			imageBuffers.map(async (buffer, index) => ({
-				input: await sharp(buffer)
-					.resize(cellSize, cellSize, { fit: 'cover' })
-					.jpeg({ quality: 85 })
-					.toBuffer(),
-				left: (index % 2) * cellSize,
-				top: Math.floor(index / 2) * cellSize
-			}))
-		);
-
-		const output = await base
-			.composite(composite)
-			.jpeg({ quality: 85 })
-			.toBuffer();
-		return `data:image/jpeg;base64,${output.toString('base64')}`;
-	} catch {
-		return undefined;
+	const [, prefix, year, month, day] = match;
+	const parsed = new Date(`${year}-${month}-${day}T00:00:00Z`);
+	if (Number.isNaN(parsed.getTime())) {
+		return raw;
 	}
+
+	const dayNumber = Number(day);
+	const mod100 = dayNumber % 100;
+	let suffix = 'th';
+	if (mod100 < 11 || mod100 > 13) {
+		if (dayNumber % 10 === 1) suffix = 'st';
+		if (dayNumber % 10 === 2) suffix = 'nd';
+		if (dayNumber % 10 === 3) suffix = 'rd';
+	}
+
+	const monthName = new Intl.DateTimeFormat('en-US', {
+		month: 'long',
+		timeZone: 'UTC'
+	}).format(parsed);
+	return `${prefix} ${monthName} ${dayNumber}${suffix}`;
 };
+
+const resolvedHeading = formatFriendlyHeading(heading);
+const yearFromHeading = (heading ?? '').match(/\b(19|20)\d{2}\b/)?.[0] ?? '';
+const resolvedSubheading = subheading?.trim() || yearFromHeading;
 
 const heroImageUrls = heroImages
 	.map((image) => image.url)
 	.filter((url): url is string => Boolean(url));
-const heroGridUrl = await compositeHeroGrid(heroImageUrls.slice(0, 4));
+const heroGridSearch = new URLSearchParams();
+for (const url of heroImageUrls.slice(0, 4)) {
+	heroGridSearch.append('i', url);
+}
+const heroGridUrl =
+	heroImageUrls.length >= 4
+		? issueSlug
+			? `/new-music-tuesday/hero-grid/${issueSlug}.jpg`
+			: `/api/new-music-hero-grid.jpg?${heroGridSearch.toString()}`
+		: undefined;
 ---
 
 <BlockWrapper as={as} class="mx-auto max-w-6xl space-y-6 px-6 py-12 text-white">
 	{
 		heroGridUrl ? (
-			<img
+			<Image
 				src={heroGridUrl}
-				alt={heading}
+				alt={resolvedHeading}
+				width={1200}
+				height={1200}
+				priority={priority}
 				class="h-auto w-full rounded-xl border border-stone-700 object-cover"
 			/>
 		) : (
 			<div class="grid grid-cols-2 gap-2">
 				{heroImageUrls.map((url, index) => (
-					<img
+					<Image
 						src={url}
-						alt={`${heading} album cover ${index + 1}`}
+						alt={`${resolvedHeading} album cover ${index + 1}`}
+						width={600}
+						height={600}
+						priority={priority}
 						class="aspect-square w-full rounded-md object-cover"
 					/>
 				))}
@@ -91,8 +100,15 @@ const heroGridUrl = await compositeHeroGrid(heroImageUrls.slice(0, 4));
 		)
 	}
 	<Heading hLevel={hLevel} class="text-4xl font-bold md:text-5xl"
-		>{heading}</Heading
+		>{resolvedHeading}</Heading
 	>
+	{
+		resolvedSubheading ? (
+			<p class="text-sm font-semibold tracking-[0.2em] text-stone-300 uppercase">
+				{resolvedSubheading}
+			</p>
+		) : null
+	}
 	{
 		description ? (
 			<p class="max-w-3xl text-lg text-stone-300">{description}</p>

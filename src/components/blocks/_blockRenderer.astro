@@ -13,9 +13,10 @@ import RichText from './richText.astro';
 interface Props {
 	data: ArrayPageBuilderBlock;
 	index?: number;
+	issueSlug?: string;
 }
 
-const { data, index = 1 } = Astro.props as Props;
+const { data, index = 1, issueSlug } = Astro.props as Props;
 const blockSettings: BlockSettings = {
 	as: index === 0 ? 'header' : 'section',
 	hLevel: index === 0 ? 1 : 2,
@@ -34,7 +35,7 @@ const blockSettings: BlockSettings = {
 	) : data._type === 'richText' ? (
 		<RichText {...data} {...blockSettings} />
 	) : data._type === 'newMusicHeroBlock' ? (
-		<NewMusicHero {...data} {...blockSettings} />
+		<NewMusicHero {...data} {...blockSettings} issueSlug={issueSlug} />
 	) : data._type === 'albumReviewBlock' ? (
 		<AlbumReview {...data} {...blockSettings} />
 	) : null

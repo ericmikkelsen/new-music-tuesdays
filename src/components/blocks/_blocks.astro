@@ -4,14 +4,15 @@ import type { ArrayPageBuilderBlock } from '../../lib/content/pageBuilderTypes';
 
 interface Props {
 	blockData?: ArrayPageBuilderBlock[];
+	issueSlug?: string;
 }
 
-const { blockData } = Astro.props as Props;
+const { blockData, issueSlug } = Astro.props as Props;
 const normalizedBlockData = Array.isArray(blockData) ? blockData : [];
 ---
 
 {
 	normalizedBlockData.map((data, index) => (
-		<BlockRenderer data={data} index={index} />
+		<BlockRenderer data={data} index={index} issueSlug={issueSlug} />
 	))
 }

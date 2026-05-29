@@ -1,24 +1,19 @@
 ---
 import '../../styles/global.css';
 import HTML from '../../layouts/html.astro';
-import {
-	getMusicReleaseBySlug,
-	getMusicReleases
-} from '../../lib/content/musicCollection';
+import { getMusicReleases } from '../../lib/content/musicCollection';
 
 export const prerender = true;
 
 export async function getStaticPaths() {
 	const releases = await getMusicReleases();
 	return releases.map((release) => ({
-		params: { slug: release.slug }
+		params: { slug: release.slug },
+		props: { release }
 	}));
 }
 
-const release = await getMusicReleaseBySlug(Astro.params.slug ?? '');
-if (!release) {
-	throw Astro.redirect('/music/');
-}
+const { release } = Astro.props;
 ---
 
 <HTML
