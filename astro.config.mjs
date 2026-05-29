@@ -71,6 +71,7 @@ export default defineConfig({
 		// at runtime, which would cause a 504 Outdated Optimize Dep on first load.
 		optimizeDeps: {
 			include: [
+				'@sanity/astro',
 				'sanity',
 				'sanity/desk',
 				'sanity/presentation',
@@ -90,6 +91,7 @@ export default defineConfig({
 		server: {
 			warmup: {
 				clientFiles: [
+					'./node_modules/@sanity/astro/dist/studio/studio-component.tsx',
 					'./node_modules/sanity/lib/_chunks-es/PresentationToolGrantsCheck.js',
 					'./node_modules/sanity/lib/_chunks-es/BroadcastDisplayedDocument.js'
 				]

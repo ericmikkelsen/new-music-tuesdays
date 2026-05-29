@@ -13,7 +13,9 @@ const DEFAULT_PREVIEW_SITE_URL = 'http://localhost:4321';
 
 const DOCUMENT_ROUTE_PREFIXES: Record<string, string> = {
 	page: '/preview',
-	blog: '/preview/blog'
+	blog: '/preview/blog',
+	musicRelease: '/preview/music',
+	newMusicTuesday: '/preview/new-music-tuesday'
 };
 
 /**

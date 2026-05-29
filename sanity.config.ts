@@ -107,6 +107,28 @@ const presentationResolve: PresentationPluginOptions['resolve'] = {
 					}
 				]
 			})
+		}),
+		musicRelease: defineLocations({
+			select: { title: 'title', slug: 'slug.current' },
+			resolve: (doc) => ({
+				locations: [
+					{
+						title: doc?.title ?? 'Untitled release',
+						href: `/preview/music/${doc?.slug}`
+					}
+				]
+			})
+		}),
+		newMusicTuesday: defineLocations({
+			select: { title: 'title', slug: 'slug.current' },
+			resolve: (doc) => ({
+				locations: [
+					{
+						title: doc?.title ?? 'Untitled issue',
+						href: `/preview/new-music-tuesday/${doc?.slug}`
+					}
+				]
+			})
 		})
 	}
 };
