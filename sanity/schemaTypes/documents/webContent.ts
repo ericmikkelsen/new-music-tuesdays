@@ -1,4 +1,4 @@
-import { defineField } from 'sanity';
+import { defineField } from '../helpers';
 import { RICH_TEXT_FIELD_ARGS } from '../objects/componentFields';
 
 import { WEB_PAGE_FIELDS } from '../webPageFields';

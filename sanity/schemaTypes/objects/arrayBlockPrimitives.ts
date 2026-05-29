@@ -1,4 +1,4 @@
-import { defineArrayMember, defineField, defineType } from 'sanity';
+import { defineArrayMember, defineField, defineType } from '../helpers';
 
 import {
 	BODY_FIELD_ARGS,

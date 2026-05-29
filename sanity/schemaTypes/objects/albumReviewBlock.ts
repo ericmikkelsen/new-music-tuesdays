@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity';
+import { defineField, defineType } from '../helpers';
 import { createElement } from 'react';
 
 export const albumReviewBlock = defineType({

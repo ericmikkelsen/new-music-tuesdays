@@ -1,4 +1,4 @@
-import { defineType, type SchemaTypeDefinition } from 'sanity';
+import { defineType, type SchemaTypeDefinition } from './helpers';
 
 import { pageType } from './documents/page';
 import { personType } from './documents/person';

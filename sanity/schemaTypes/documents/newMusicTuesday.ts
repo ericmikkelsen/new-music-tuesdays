@@ -1,4 +1,4 @@
-import { defineArrayMember, defineField, defineType } from 'sanity';
+import { defineArrayMember, defineField, defineType } from '../helpers';
 
 export const newMusicTuesday = defineType({
 	name: 'newMusicTuesday',

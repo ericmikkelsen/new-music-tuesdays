@@ -1,4 +1,4 @@
-import { defineArrayMember, defineField } from 'sanity';
+import { defineArrayMember, defineField } from '../helpers';
 
 /**
  * Reusable heading string field.
