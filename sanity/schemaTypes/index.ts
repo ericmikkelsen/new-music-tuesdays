@@ -1,4 +1,4 @@
-import { defineType, type SchemaTypeDefinition } from './helpers';
+import { defineType, type SchemaTypeDefinition } from './helpers.ts';
 
 import { pageType } from './documents/page';
 import { personType } from './documents/person';
@@ -6,6 +6,7 @@ import { newMusicTuesday } from './documents/newMusicTuesday';
 import { scaffoldPortableTextDocument } from './documents/webContent';
 import { musicRelease } from './documents/musicRelease';
 import {
+	slideType,
 	billboardType,
 	listScrollerType,
 	peopleRefsType,
@@ -44,6 +45,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
 	linkType,
 	listType,
 	imageObjectType,
+	slideType,
 	billboardType,
 	listScrollerType,
 	peopleRefsType,

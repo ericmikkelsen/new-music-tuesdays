@@ -27,6 +27,13 @@ export type BlockSettings = {
 };
 
 export type ArrayPageBuilderBlock =
+	| {
+			_type: 'slide';
+			heading?: string;
+			body?: string;
+			link?: { text?: string; url?: string };
+			image?: ImageType;
+	  }
 	| (Omit<
 			Extract<SanityPageBuilderBlock, { _type: 'billboard' }>,
 			'image'

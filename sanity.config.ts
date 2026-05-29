@@ -12,6 +12,7 @@ import {
 	resolveDocumentProductionUrl,
 	resolvePreviewSiteUrl
 } from './sanity/previewLinks';
+import { StudioActionNavbar } from './sanity/components/StudioActionNavbar';
 import { defaultDocumentNode } from './sanity/defaultDocumentNode';
 import { resolveStudioEnvValue } from './sanity/resolveStudioEnv';
 import { schemaTypes } from './sanity/schemaTypes';
@@ -153,5 +154,10 @@ export default defineConfig({
 	schema: {
 		// Central registry keeps schema composition predictable as new types are added.
 		types: schemaTypes
+	},
+	studio: {
+		components: {
+			navbar: StudioActionNavbar
+		}
 	}
 });

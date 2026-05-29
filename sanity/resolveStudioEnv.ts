@@ -12,6 +12,32 @@ export type ResolveStudioEnvOptions = {
 	processEnv?: Record<string, string | undefined>;
 };
 
+const ENV_KEY_ALIASES: Record<StudioEnvKey, string[]> = {
+	PUBLIC_SANITY_PROJECT_ID: [
+		'PUBLIC_SANITY_PROJECT_ID',
+		'SANITY_STUDIO_PROJECT_ID'
+	],
+	PUBLIC_SANITY_DATASET: ['PUBLIC_SANITY_DATASET', 'SANITY_STUDIO_DATASET']
+};
+
+const readFirstEnvValue = (
+	env: Record<string, string | undefined> | undefined,
+	keys: string[]
+): string | undefined => {
+	if (!env) {
+		return undefined;
+	}
+
+	for (const envKey of keys) {
+		const value = env[envKey];
+		if (typeof value === 'string' && value) {
+			return value;
+		}
+	}
+
+	return undefined;
+};
+
 /**
  * Resolves required public Studio env values for embedded Studio runtime.
  *
@@ -37,18 +63,23 @@ export const resolveStudioEnvValue = (
 	}
 
 	const importMetaEnv = options.importMetaEnv ?? import.meta?.env;
-	if (typeof importMetaEnv?.[key] === 'string' && importMetaEnv[key]) {
-		return importMetaEnv[key];
+	const importMetaEnvValue = readFirstEnvValue(
+		importMetaEnv,
+		ENV_KEY_ALIASES[key]
+	);
+	if (importMetaEnvValue) {
+		return importMetaEnvValue;
 	}
 
 	const processEnv =
 		options.processEnv ??
 		(typeof process !== 'undefined' ? process.env : undefined);
-	if (typeof processEnv?.[key] === 'string' && processEnv[key]) {
-		return processEnv[key];
+	const processEnvValue = readFirstEnvValue(processEnv, ENV_KEY_ALIASES[key]);
+	if (processEnvValue) {
+		return processEnvValue;
 	}
 
 	throw new Error(
-		`Missing required environment variable ${key}. Set it in .env before starting Astro Studio.`
+		`Missing required environment variable ${key}. Checked aliases: ${ENV_KEY_ALIASES[key].join(', ')}.`
 	);
 };

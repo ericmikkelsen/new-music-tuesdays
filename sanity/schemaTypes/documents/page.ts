@@ -12,12 +12,7 @@ export const pageType = defineType({
 			name: 'blocks',
 			title: 'Blocks',
 			type: 'array',
-			of: [
-				defineArrayMember({ type: 'billboard' }),
-				defineArrayMember({ type: 'listScroller' }),
-				defineArrayMember({ type: 'peopleRefs' }),
-				defineArrayMember({ type: 'richText' })
-			],
+			of: [defineArrayMember({ type: 'slide' })],
 			validation: (rule) => rule.required().min(1)
 		})
 	],

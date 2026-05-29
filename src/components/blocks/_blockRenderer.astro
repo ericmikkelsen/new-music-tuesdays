@@ -6,6 +6,7 @@ import type {
 import AlbumReview from './AlbumReview.astro';
 import Billboard from './Billboard.astro';
 import NewMusicHero from './NewMusicHero.astro';
+import Slide from './Slide.astro';
 import ListScroller from './listScroller.astro';
 import PeopleRefs from './peopleRefs.astro';
 import RichText from './richText.astro';
@@ -26,7 +27,9 @@ const blockSettings: BlockSettings = {
 ---
 
 {
-	data._type === 'billboard' ? (
+	data._type === 'slide' ? (
+		<Slide {...data} {...blockSettings} />
+	) : data._type === 'billboard' ? (
 		<Billboard {...data} {...blockSettings} />
 	) : data._type === 'listScroller' ? (
 		<ListScroller {...data} {...blockSettings} />
