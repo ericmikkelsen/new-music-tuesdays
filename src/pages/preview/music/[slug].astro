@@ -1,0 +1,57 @@
+---
+import '../../../styles/global.css';
+import HTML from '../../../layouts/html.astro';
+import { getMusicReleaseBySlug } from '../../../lib/content/musicCollection';
+
+export const prerender = false;
+
+const release = await getMusicReleaseBySlug(Astro.params.slug ?? '', {
+	preview: true
+});
+if (!release) {
+	Astro.response.status = 404;
+}
+
+const title = release
+	? `${release.title} — ${release.artistName}`
+	: 'Preview not found';
+const description =
+	release?.editorialNote ?? 'The requested release was not found.';
+---
+
+{
+	release ? (
+		<HTML title={title} description={description}>
+			<div class="min-h-screen bg-black text-white">
+				<section class="relative isolate overflow-hidden">
+					<div class="mx-auto grid max-w-6xl gap-8 px-6 py-14 md:grid-cols-[320px_1fr]">
+						<img
+							src={release.coverArtUrl}
+							alt={`${release.title} cover art`}
+							class="w-full rounded-xl object-cover"
+						/>
+						<div class="space-y-4">
+							<h1 class="text-4xl font-bold">{release.title}</h1>
+							<p class="text-lg text-stone-200">
+								{release.artistName}
+							</p>
+							<p class="text-stone-300">
+								{release.releaseDate} • {release.label} •{' '}
+								{release.trackCount} tracks
+							</p>
+							{release.editorialNote ? (
+								<p>{release.editorialNote}</p>
+							) : null}
+						</div>
+					</div>
+				</section>
+			</div>
+		</HTML>
+	) : (
+		<HTML title={title} description={description}>
+			<div class="mx-auto max-w-3xl px-6 py-14 text-stone-700">
+				Preview release not found.
+			</div>
+		</HTML>
+	)
+}

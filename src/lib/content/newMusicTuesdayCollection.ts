@@ -4,6 +4,7 @@ export type NewMusicHeroBlock = {
 	_type: 'newMusicHeroBlock';
 	_key?: string;
 	heading: string;
+	subheading: string;
 	description: string;
 	heroImages: { url: string }[];
 };
@@ -90,12 +91,21 @@ const NEW_MUSIC_TUESDAY_LATEST_QUERY = `*[_type == "newMusicTuesday" && defined(
   }
 }`;
 
+function extractYearFromText(text: string): string {
+	const match = text.match(/\b(19|20)\d{2}\b/);
+	return match ? match[0] : '';
+}
+
 function mapNMTBlock(block: any): NMTBlock | null {
 	if (block?._type === 'newMusicHeroBlock') {
 		return {
 			_type: 'newMusicHeroBlock',
 			_key: block._key,
 			heading: block.heading ?? '',
+			subheading:
+				typeof block.subheading === 'string' && block.subheading.trim()
+					? block.subheading
+					: extractYearFromText(block.heading ?? ''),
 			description: block.description ?? '',
 			heroImages: Array.isArray(block.heroImages) ? block.heroImages : []
 		};
@@ -142,12 +152,14 @@ export function mapSanityNewMusicTuesdayIssue(
 	};
 }
 
-export async function getNewMusicTuesdayIssues(): Promise<
-	NewMusicTuesdayIssue[]
-> {
+export async function getNewMusicTuesdayIssues(
+	options: { preview?: boolean } = {}
+): Promise<NewMusicTuesdayIssue[]> {
 	try {
 		const issues = await loadQuery<SanityNMTIssueQueryResult[]>(
-			NEW_MUSIC_TUESDAY_QUERY
+			NEW_MUSIC_TUESDAY_QUERY,
+			undefined,
+			{ preview: options.preview }
 		);
 		return issues
 			.map(mapSanityNewMusicTuesdayIssue)
@@ -158,12 +170,14 @@ export async function getNewMusicTuesdayIssues(): Promise<
 }
 
 export async function getNewMusicTuesdayBySlug(
-	slug: string
+	slug: string,
+	options: { preview?: boolean } = {}
 ): Promise<NewMusicTuesdayIssue | undefined> {
 	try {
 		const issue = await loadQuery<SanityNMTIssueQueryResult | null>(
 			NEW_MUSIC_TUESDAY_BY_SLUG_QUERY,
-			{ slug }
+			{ slug },
+			{ preview: options.preview }
 		);
 		if (!issue) return undefined;
 		return mapSanityNewMusicTuesdayIssue(issue) ?? undefined;
@@ -172,12 +186,14 @@ export async function getNewMusicTuesdayBySlug(
 	}
 }
 
-export async function getLatestNewMusicTuesday(): Promise<
-	NewMusicTuesdayIssue | undefined
-> {
+export async function getLatestNewMusicTuesday(
+	options: { preview?: boolean } = {}
+): Promise<NewMusicTuesdayIssue | undefined> {
 	try {
 		const issue = await loadQuery<SanityNMTIssueQueryResult | null>(
-			NEW_MUSIC_TUESDAY_LATEST_QUERY
+			NEW_MUSIC_TUESDAY_LATEST_QUERY,
+			undefined,
+			{ preview: options.preview }
 		);
 		if (!issue) return undefined;
 		return mapSanityNewMusicTuesdayIssue(issue) ?? undefined;

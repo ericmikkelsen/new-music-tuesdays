@@ -45,6 +45,10 @@ export function isPreviewEnabled(): boolean {
 	return previewEnabled;
 }
 
+type LoadQueryOptions = {
+	preview?: boolean;
+};
+
 /**
  * Executes a GROQ query using published or drafts perspective based on preview mode.
  *
@@ -56,16 +60,17 @@ export function isPreviewEnabled(): boolean {
  */
 export async function loadQuery<QueryResult>(
 	query: string,
-	params?: QueryParams
+	params?: QueryParams,
+	options: LoadQueryOptions = {}
 ): Promise<QueryResult> {
-	if (!previewEnabled) {
+	if (!options.preview) {
 		return client.fetch<QueryResult>(query, params ?? {}, {
 			perspective: 'published',
 			stega: false
 		});
 	}
 
-	if (!token) {
+	if (!previewEnabled || !token) {
 		// Draft queries require authenticated access, so preview without a token is a configuration error.
 		throw new Error(
 			'SANITY_API_READ_TOKEN is required when PUBLIC_SANITY_ENABLE_PREVIEW=true or PUBLIC_SANITY_VISUAL_EDITING_ENABLED=true.'

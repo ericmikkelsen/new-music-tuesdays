@@ -5,7 +5,7 @@ import HTML from '../../layouts/html.astro';
 
 export const prerender = false;
 
-const page = await getAstroPageBySlugDirect('/');
+const page = await getAstroPageBySlugDirect('/', { preview: true });
 if (!page) {
 	Astro.response.status = 404;
 }

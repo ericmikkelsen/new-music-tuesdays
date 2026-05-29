@@ -129,12 +129,14 @@ export async function getMusicReleases(): Promise<MusicRelease[]> {
 }
 
 export async function getMusicReleaseBySlug(
-	slug: string
+	slug: string,
+	options: { preview?: boolean } = {}
 ): Promise<MusicRelease | undefined> {
 	try {
 		const release = await loadQuery<SanityMusicReleaseQueryResult | null>(
 			MUSIC_RELEASE_BY_SLUG_QUERY,
-			{ slug }
+			{ slug },
+			{ preview: options.preview }
 		);
 		if (!release) return undefined;
 		return mapSanityMusicRelease(release) ?? undefined;

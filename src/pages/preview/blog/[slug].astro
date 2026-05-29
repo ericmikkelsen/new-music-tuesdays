@@ -6,7 +6,9 @@ import HTML from '../../../layouts/html.astro';
 export const prerender = false;
 
 const slug = Astro.params.slug;
-const post = slug ? await getAstroBlogPostBySlugDirect(slug) : undefined;
+const post = slug
+	? await getAstroBlogPostBySlugDirect(slug, { preview: true })
+	: undefined;
 if (!post) {
 	Astro.response.status = 404;
 }
