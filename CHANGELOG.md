@@ -1,3 +1,25 @@
+## 1.0.0 (2026-05-29)
+
+### Features
+
+* add music feed and new music tuesday scaffolding ([d36cc95](https://github.com/ericmikkelsen/new-music-tuesdays/commit/d36cc95520a2d1700924ed942ddc488c40e7fe72))
+* **content:** expose release art URLs and track lists ([62b4e8a](https://github.com/ericmikkelsen/new-music-tuesdays/commit/62b4e8a957303db7c16cb0fce593a49b7ff77dca))
+* **itunes:** fetch album track lists with resilient matching ([9cbda9f](https://github.com/ericmikkelsen/new-music-tuesdays/commit/9cbda9fcad95b609e8ec10ac0d7df286a6516563))
+* **new-music-tuesday:** polish index cards and block styling ([14f881d](https://github.com/ericmikkelsen/new-music-tuesdays/commit/14f881d34278ebb66a75929c1ab90460e12bf618))
+* **nmt:** enrich hero metadata and index cards ([03c4cb7](https://github.com/ericmikkelsen/new-music-tuesdays/commit/03c4cb79468da0b2f5e2ebd3ed9478996cb859cc))
+* **render:** prerender music and NMT pages with hero-grid assets ([5151b17](https://github.com/ericmikkelsen/new-music-tuesdays/commit/5151b1751ef9840cae1d1a90f8baf465fa1505ba))
+* **sanity:** support image cover art and preview media ([25fbfd5](https://github.com/ericmikkelsen/new-music-tuesdays/commit/25fbfd54ecf46b5cdcaf08cf4cdb84588094c5dd))
+* **seed:** migrate music seeding to wikidata and itunes ([c3d5d9b](https://github.com/ericmikkelsen/new-music-tuesdays/commit/c3d5d9ba00b784f7103612c6394a26077358fe32))
+* **seed:** preserve release art and backfill missing metadata ([d7a63e9](https://github.com/ericmikkelsen/new-music-tuesdays/commit/d7a63e97a17a44d2e6bac8a6c712466d59d66fe5))
+* **studio:** add deploy action and homepage music updates ([df5c1e1](https://github.com/ericmikkelsen/new-music-tuesdays/commit/df5c1e119075c75cb2ab5487827c1724331af54b))
+* **studio:** add music and NMT preview link mapping ([309a3af](https://github.com/ericmikkelsen/new-music-tuesdays/commit/309a3aff90dd2ed2584ccfd264a33be6c839dc99))
+* **studio:** sync presentation routing and draft redirects ([fcecd4d](https://github.com/ericmikkelsen/new-music-tuesdays/commit/fcecd4d384e710fe5fc7a6a7fee3974e2a7453dc))
+* updates blocks to make a little more sense ([0e2ee7d](https://github.com/ericmikkelsen/new-music-tuesdays/commit/0e2ee7de39bcdccce379593763c2baab9efe2f37))
+
+### Bug Fixes
+
+* **test:** avoid studio runtime imports in node tests ([484573a](https://github.com/ericmikkelsen/new-music-tuesdays/commit/484573a1d2a3ad87763210ae3b244c0064dcfa8f))
+
 ## 1.0.0 (2026-04-27)
 
 ### Features
