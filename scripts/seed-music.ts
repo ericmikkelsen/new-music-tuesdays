@@ -103,6 +103,33 @@ function getFollowingMondayStart(referenceDate: Date): Date {
 	return monday;
 }
 
+function formatDayOrdinal(day: number): string {
+	const mod100 = day % 100;
+	if (mod100 >= 11 && mod100 <= 13) {
+		return `${day}th`;
+	}
+
+	switch (day % 10) {
+		case 1:
+			return `${day}st`;
+		case 2:
+			return `${day}nd`;
+		case 3:
+			return `${day}rd`;
+		default:
+			return `${day}th`;
+	}
+}
+
+function formatNewMusicTuesdayHeading(date: Date): string {
+	const month = new Intl.DateTimeFormat('en-US', {
+		month: 'long',
+		timeZone: 'UTC'
+	}).format(date);
+	const day = date.getUTCDate();
+	return `New Music Tuesday ${month} ${formatDayOrdinal(day)}`;
+}
+
 function isAfterFollowingMonday(
 	releaseDate: string,
 	referenceDate: Date
@@ -818,7 +845,8 @@ async function seedMusic() {
 
 	const now = seedDate;
 	const dateStr = seedDateStr;
-	const nmtTitle = `New Music Tuesday ${dateStr}`;
+	const nmtTitle = formatNewMusicTuesdayHeading(seedDate);
+	const nmtSubheading = String(seedDate.getUTCFullYear());
 	const nmtSlug = `new-music-tuesday-${dateStr}`;
 	const nmtId = `nmt-${dateStr}`;
 	const heroBlockKey = `hero-${dateStr}`;
@@ -887,6 +915,7 @@ async function seedMusic() {
 		_type: 'newMusicHeroBlock',
 		_key: heroBlockKey,
 		heading: nmtTitle,
+		subheading: nmtSubheading,
 		description: buildHeroFallbackDescription(top4),
 		heroImages: heroImageAssets
 	};

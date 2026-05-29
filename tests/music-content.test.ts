@@ -28,7 +28,7 @@ test('mapSanityNewMusicTuesdayIssue maps known block types only', () => {
 		blocks: [
 			{
 				_type: 'newMusicHeroBlock',
-				heading: 'Hero',
+				heading: 'New Music Tuesday 2026-01-01',
 				description: 'Desc',
 				heroImages: [{ url: 'https://example.com/1.jpg' }]
 			},
@@ -49,5 +49,8 @@ test('mapSanityNewMusicTuesdayIssue maps known block types only', () => {
 	assert.ok(mapped);
 	assert.equal(mapped?.blocks.length, 2);
 	assert.equal(mapped?.blocks[0]?._type, 'newMusicHeroBlock');
+	if (mapped?.blocks[0]?._type === 'newMusicHeroBlock') {
+		assert.equal(mapped.blocks[0].subheading, '2026');
+	}
 	assert.equal(mapped?.blocks[1]?._type, 'albumReviewBlock');
 });

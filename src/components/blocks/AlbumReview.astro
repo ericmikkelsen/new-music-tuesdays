@@ -5,6 +5,7 @@ import type {
 } from '../../lib/content/pageBuilderTypes';
 import BlockWrapper from '../atoms/BlockWrapper.astro';
 import Heading from '../atoms/Heading.astro';
+import Image from '../atoms/Image.astro';
 
 interface Props
 	extends
@@ -21,6 +22,7 @@ const {
 	featuredTrackUrl,
 	spotifyUrl,
 	genres = [],
+	priority,
 	as,
 	hLevel
 } = Astro.props as Props;
@@ -33,9 +35,12 @@ const {
 	<div class="space-y-4 p-6 text-white">
 		{
 			albumArtUrl ? (
-				<img
+				<Image
 					src={albumArtUrl}
 					alt={heading}
+					width={600}
+					height={600}
+					priority={priority}
 					class="w-full rounded-lg object-cover"
 				/>
 			) : null
@@ -81,9 +86,9 @@ const {
 			spotifyUrl ? (
 				<a
 					href={spotifyUrl}
-					class="inline-block rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-black"
+					class="inline-block rounded-full bg-pink-500 px-4 py-2 text-sm font-semibold text-black"
 				>
-					Listen on Spotify
+					Listen on Listnr
 				</a>
 			) : null
 		}
