@@ -25,6 +25,17 @@ const formatIssueDate = (value?: string): string => {
 		timeZone: 'UTC'
 	}).format(parsed);
 };
+
+const resolveCardTint = (hex?: string): string | undefined => {
+	if (!hex) {
+		return undefined;
+	}
+
+	const normalized = hex.trim();
+	return /^#[0-9a-fA-F]{6}$/u.test(normalized)
+		? `${normalized}22`
+		: undefined;
+};
 ---
 
 <HTML
@@ -39,7 +50,6 @@ const formatIssueDate = (value?: string): string => {
 					{issues.map((issue, index) => {
 						const firstBlock = issue.blocks[0];
 						const publishedHref = `/new-music-tuesday/${issue.slug}/`;
-						const previewHref = `/preview/new-music-tuesday/${issue.slug}`;
 						const cardTitle =
 							firstBlock?._type === 'newMusicHeroBlock' &&
 							firstBlock.heading
@@ -57,8 +67,22 @@ const formatIssueDate = (value?: string): string => {
 							firstBlock?._type === 'newMusicHeroBlock'
 								? firstBlock.description
 								: '';
+						const cardTint =
+							firstBlock?._type === 'newMusicHeroBlock'
+								? resolveCardTint(
+										firstBlock.heroImages[0]
+											?.dominantBackground
+									)
+								: undefined;
 						return (
-							<li class="rounded-xl border border-stone-200 p-5">
+							<li
+								class="rounded-xl border border-stone-200 p-5"
+								style={
+									cardTint
+										? `background-color: ${cardTint};`
+										: undefined
+								}
+							>
 								{heroImageUrl ? (
 									<Image
 										src={heroImageUrl}
@@ -75,28 +99,6 @@ const formatIssueDate = (value?: string): string => {
 								>
 									{cardTitle}
 								</a>
-								<div class="mt-2 flex gap-4 text-sm">
-									<a
-										href={publishedHref}
-										class="font-semibold text-emerald-700 underline"
-									>
-										Published
-									</a>
-									<a
-										href={previewHref}
-										class="font-semibold text-stone-700 underline"
-									>
-										Preview
-									</a>
-								</div>
-								{formattedDate ? (
-									<time
-										class="mt-1 block text-sm text-stone-500"
-										datetime={issue.publishedAt}
-									>
-										{formattedDate}
-									</time>
-								) : null}
 								{previewDescription ? (
 									<p class="mt-3 text-stone-700">
 										{previewDescription}

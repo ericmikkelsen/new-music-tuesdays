@@ -30,9 +30,15 @@ const {
 
 <BlockWrapper
 	as={as}
-	class="relative isolate overflow-hidden rounded-xl border border-stone-700"
+	class="relative isolate mx-auto max-w-3xl overflow-hidden rounded-xl border border-stone-700"
 >
 	<div class="space-y-4 p-6 text-white">
+		<Heading hLevel={hLevel} class="text-3xl font-semibold"
+			>{heading}</Heading
+		>
+		<p class="text-sm tracking-[0.14em] text-stone-300 uppercase">
+			{subheading}
+		</p>
 		{
 			albumArtUrl ? (
 				<Image
@@ -45,12 +51,6 @@ const {
 				/>
 			) : null
 		}
-		<Heading hLevel={hLevel} class="text-3xl font-semibold"
-			>{heading}</Heading
-		>
-		<p class="text-sm tracking-[0.14em] text-stone-300 uppercase">
-			{subheading}
-		</p>
 		{body ? <p class="max-w-3xl text-stone-100">{body}</p> : null}
 		{
 			featuredTrack && featuredTrackUrl ? (

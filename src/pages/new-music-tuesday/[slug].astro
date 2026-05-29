@@ -18,9 +18,7 @@ const { issue } = Astro.props;
 ---
 
 <HTML title={issue.title} description="New Music Tuesday issue">
-	<div class="min-h-screen bg-[#090b12] text-white">
-		<div class="mx-auto max-w-6xl space-y-8 px-6 pb-12">
-			<Blocks blockData={issue.blocks} issueSlug={issue.slug} />
-		</div>
+	<div class="min-h-screen space-y-8 bg-[#090b12] px-6 pb-12 text-white">
+		<Blocks blockData={issue.blocks} issueSlug={issue.slug} />
 	</div>
 </HTML>

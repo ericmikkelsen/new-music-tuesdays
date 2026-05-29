@@ -6,7 +6,7 @@ export type NewMusicHeroBlock = {
 	heading: string;
 	subheading: string;
 	description: string;
-	heroImages: { url: string }[];
+	heroImages: { url: string; dominantBackground?: string }[];
 };
 
 export type AlbumReviewBlock = {
@@ -45,7 +45,10 @@ const NEW_MUSIC_TUESDAY_QUERY = `*[_type == "newMusicTuesday" && defined(slug.cu
   blocks[]{
     ...,
     _type,
-    heroImages[]{"url": asset->url},
+		heroImages[]{
+			"url": asset->url,
+			"dominantBackground": asset->metadata.palette.dominant.background
+		},
 		"heading": coalesce(heading, musicRelease->title),
 		"subheading": coalesce(subheading, musicRelease->artistName),
 		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt.asset->url, musicRelease->coverArt),
@@ -63,7 +66,10 @@ const NEW_MUSIC_TUESDAY_BY_SLUG_QUERY = `*[_type == "newMusicTuesday" && slug.cu
   blocks[]{
     ...,
     _type,
-    heroImages[]{"url": asset->url},
+		heroImages[]{
+			"url": asset->url,
+			"dominantBackground": asset->metadata.palette.dominant.background
+		},
 		"heading": coalesce(heading, musicRelease->title),
 		"subheading": coalesce(subheading, musicRelease->artistName),
 		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt.asset->url, musicRelease->coverArt),
@@ -81,7 +87,10 @@ const NEW_MUSIC_TUESDAY_LATEST_QUERY = `*[_type == "newMusicTuesday" && defined(
   blocks[]{
     ...,
     _type,
-    heroImages[]{"url": asset->url},
+		heroImages[]{
+			"url": asset->url,
+			"dominantBackground": asset->metadata.palette.dominant.background
+		},
 		"heading": coalesce(heading, musicRelease->title),
 		"subheading": coalesce(subheading, musicRelease->artistName),
 		"albumArtUrl": coalesce(albumArt.asset->url, musicRelease->coverArt.asset->url, musicRelease->coverArt),
@@ -98,6 +107,18 @@ function extractYearFromText(text: string): string {
 
 function mapNMTBlock(block: any): NMTBlock | null {
 	if (block?._type === 'newMusicHeroBlock') {
+		const heroImages = Array.isArray(block.heroImages)
+			? block.heroImages
+					.map((image: any) => ({
+						url: typeof image?.url === 'string' ? image.url : '',
+						dominantBackground:
+							typeof image?.dominantBackground === 'string'
+								? image.dominantBackground
+								: undefined
+					}))
+					.filter((image: { url: string }) => Boolean(image.url))
+			: [];
+
 		return {
 			_type: 'newMusicHeroBlock',
 			_key: block._key,
@@ -107,7 +128,7 @@ function mapNMTBlock(block: any): NMTBlock | null {
 					? block.subheading
 					: extractYearFromText(block.heading ?? ''),
 			description: block.description ?? '',
-			heroImages: Array.isArray(block.heroImages) ? block.heroImages : []
+			heroImages: heroImages
 		};
 	}
 
