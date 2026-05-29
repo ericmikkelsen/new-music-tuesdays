@@ -10,8 +10,7 @@ export const albumReviewBlock = defineType({
 			name: 'musicRelease',
 			title: 'Music release',
 			type: 'reference',
-			to: [{ type: 'musicRelease' }],
-			readOnly: true
+			to: [{ type: 'musicRelease' }]
 		}),
 		defineField({
 			name: 'body',
@@ -24,7 +23,6 @@ export const albumReviewBlock = defineType({
 			title: 'Show Your Work',
 			type: 'text',
 			rows: 14,
-			readOnly: true,
 			description:
 				'Editor-facing provenance note showing the data, assumptions, and source trail used to shape the review draft.'
 		})

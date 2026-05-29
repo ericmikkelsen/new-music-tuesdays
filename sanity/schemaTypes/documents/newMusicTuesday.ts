@@ -8,21 +8,18 @@ export const newMusicTuesday = defineType({
 		defineField({
 			name: 'title',
 			title: 'Title',
-			type: 'string',
-			readOnly: true
+			type: 'string'
 		}),
 		defineField({
 			name: 'slug',
 			title: 'Slug',
 			type: 'slug',
-			readOnly: true,
 			options: { source: 'title' }
 		}),
 		defineField({
 			name: 'publishedAt',
 			title: 'Published at',
-			type: 'datetime',
-			readOnly: true
+			type: 'datetime'
 		}),
 		defineField({
 			name: 'blocks',

@@ -1,6 +1,7 @@
 import { assist } from '@sanity/assist';
 import { defineConfig } from 'sanity';
 import {
+	defineDocuments,
 	defineLocations,
 	presentationTool,
 	type PresentationPluginOptions
@@ -11,6 +12,7 @@ import {
 	resolveDocumentProductionUrl,
 	resolvePreviewSiteUrl
 } from './sanity/previewLinks';
+import { defaultDocumentNode } from './sanity/defaultDocumentNode';
 import { schemaTypes } from './sanity/schemaTypes';
 
 declare const __SANITY_STUDIO_PROJECT_ID__: string;
@@ -76,6 +78,29 @@ export const resolveStudioEnvValue = (
 const projectId = resolveStudioEnvValue('PUBLIC_SANITY_PROJECT_ID');
 const dataset = resolveStudioEnvValue('PUBLIC_SANITY_DATASET');
 
+const PREVIEW_ROUTE_PREFIX_BY_TYPE = {
+	page: '/preview',
+	blog: '/preview/blog',
+	musicRelease: '/preview/music',
+	newMusicTuesday: '/preview/new-music-tuesday'
+} as const;
+
+type PreviewableType = keyof typeof PREVIEW_ROUTE_PREFIX_BY_TYPE;
+
+const resolvePreviewPath = (type: PreviewableType, slug?: string): string => {
+	const prefix = PREVIEW_ROUTE_PREFIX_BY_TYPE[type];
+	const normalizedSlug = slug
+		?.trim()
+		.replace(/^\/+/u, '')
+		.replace(/\/+$/u, '');
+
+	if (!normalizedSlug) {
+		return prefix;
+	}
+
+	return `${prefix}/${normalizedSlug}`;
+};
+
 /**
  * Embedded Studio configuration served through the Astro app.
  *
@@ -85,6 +110,24 @@ const dataset = resolveStudioEnvValue('PUBLIC_SANITY_DATASET');
  * The Presentation Tool uses this to navigate the iframe when an editor selects a document.
  */
 const presentationResolve: PresentationPluginOptions['resolve'] = {
+	mainDocuments: defineDocuments([
+		{
+			route: '/preview/:slug',
+			filter: '_type == "page" && slug.current == $slug'
+		},
+		{
+			route: '/preview/blog/:slug',
+			filter: '_type == "blog" && slug.current == $slug'
+		},
+		{
+			route: '/preview/music/:slug',
+			filter: '_type == "musicRelease" && slug.current == $slug'
+		},
+		{
+			route: '/preview/new-music-tuesday/:slug',
+			filter: '_type == "newMusicTuesday" && slug.current == $slug'
+		}
+	]),
 	locations: {
 		page: defineLocations({
 			select: { title: 'title', slug: 'slug.current' },
@@ -92,7 +135,7 @@ const presentationResolve: PresentationPluginOptions['resolve'] = {
 				locations: [
 					{
 						title: doc?.title ?? 'Untitled',
-						href: `/preview/${doc?.slug}`
+						href: resolvePreviewPath('page', doc?.slug)
 					}
 				]
 			})
@@ -103,7 +146,7 @@ const presentationResolve: PresentationPluginOptions['resolve'] = {
 				locations: [
 					{
 						title: doc?.title ?? 'Untitled',
-						href: `/preview/blog/${doc?.slug}`
+						href: resolvePreviewPath('blog', doc?.slug)
 					}
 				]
 			})
@@ -114,7 +157,7 @@ const presentationResolve: PresentationPluginOptions['resolve'] = {
 				locations: [
 					{
 						title: doc?.title ?? 'Untitled release',
-						href: `/preview/music/${doc?.slug}`
+						href: resolvePreviewPath('musicRelease', doc?.slug)
 					}
 				]
 			})
@@ -125,7 +168,7 @@ const presentationResolve: PresentationPluginOptions['resolve'] = {
 				locations: [
 					{
 						title: doc?.title ?? 'Untitled issue',
-						href: `/preview/new-music-tuesday/${doc?.slug}`
+						href: resolvePreviewPath('newMusicTuesday', doc?.slug)
 					}
 				]
 			})
@@ -145,7 +188,7 @@ export default defineConfig({
 	projectId,
 	dataset,
 	plugins: [
-		structureTool(),
+		structureTool({ defaultDocumentNode }),
 		assist(),
 		presentationTool({
 			resolve: presentationResolve,

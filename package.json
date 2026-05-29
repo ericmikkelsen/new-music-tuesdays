@@ -63,6 +63,7 @@
 		"react-dom": "^19.2.5",
 		"react-is": "^19.2.5",
 		"sanity": "^5.23.0",
+		"sanity-plugin-iframe-pane": "^5.0.13",
 		"sharp": "^0.34.5",
 		"styled-components": "^6.4.1"
 	}

@@ -9,14 +9,12 @@ export const newMusicHeroBlock = defineType({
 			name: 'heading',
 			title: 'Heading',
 			type: 'string',
-			readOnly: true,
 			description: 'Auto-populated: "New Music Tuesday {DATE}"'
 		}),
 		defineField({
 			name: 'subheading',
 			title: 'Subheading',
 			type: 'string',
-			readOnly: true,
 			description: 'Auto-populated year, e.g. "2026"'
 		}),
 		defineField({

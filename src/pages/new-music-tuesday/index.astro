@@ -38,6 +38,8 @@ const formatIssueDate = (value?: string): string => {
 				<ul class="grid gap-4 md:grid-cols-2">
 					{issues.map((issue, index) => {
 						const firstBlock = issue.blocks[0];
+						const publishedHref = `/new-music-tuesday/${issue.slug}/`;
+						const previewHref = `/preview/new-music-tuesday/${issue.slug}`;
 						const cardTitle =
 							firstBlock?._type === 'newMusicHeroBlock' &&
 							firstBlock.heading
@@ -68,11 +70,25 @@ const formatIssueDate = (value?: string): string => {
 									/>
 								) : null}
 								<a
-									href={`/new-music-tuesday/${issue.slug}/`}
+									href={publishedHref}
 									class="text-2xl font-semibold text-emerald-700 underline"
 								>
 									{cardTitle}
 								</a>
+								<div class="mt-2 flex gap-4 text-sm">
+									<a
+										href={publishedHref}
+										class="font-semibold text-emerald-700 underline"
+									>
+										Published
+									</a>
+									<a
+										href={previewHref}
+										class="font-semibold text-stone-700 underline"
+									>
+										Preview
+									</a>
+								</div>
 								{formattedDate ? (
 									<time
 										class="mt-1 block text-sm text-stone-500"

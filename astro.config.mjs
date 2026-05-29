@@ -89,6 +89,8 @@ export default defineConfig({
 		// Without this, Vite discovers them at runtime and throws a 504 Outdated Optimize Dep
 		// the first time the Presentation tool is opened.
 		server: {
+			port: 4321,
+			strictPort: true,
 			warmup: {
 				clientFiles: [
 					'./node_modules/@sanity/astro/dist/studio/studio-component.tsx',
