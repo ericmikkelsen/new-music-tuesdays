@@ -12,13 +12,7 @@ import {
 
 export type ComponentCategory = 'atoms' | 'molecules' | 'organisms' | 'blocks';
 export type ComponentFieldKey =
-	| 'heading'
-	| 'subheading'
-	| 'body'
-	| 'link'
-	| 'image'
-	| 'links'
-	| 'cards';
+	'heading' | 'subheading' | 'body' | 'link' | 'image' | 'links' | 'cards';
 export type ComponentBodyType = 'string' | 'portable';
 
 export const COMPONENT_CATEGORIES: ComponentCategory[] = [
