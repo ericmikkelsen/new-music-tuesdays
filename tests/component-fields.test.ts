@@ -15,8 +15,7 @@ test('HEADING_FIELD_ARGS defines heading string field', () => {
 	assert.equal(HEADING_FIELD_ARGS.type, 'string');
 
 	const validation = HEADING_FIELD_ARGS.validation as
-		| ((rule: { required: () => string }) => string)
-		| undefined;
+		((rule: { required: () => string }) => string) | undefined;
 
 	assert.equal(typeof validation, 'function');
 	assert.equal(
